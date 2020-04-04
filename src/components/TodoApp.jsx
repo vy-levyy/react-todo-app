@@ -9,13 +9,14 @@ class TodoApp extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = { 
+    this.state = {
       taskList: [],
       activeItemsCounter: 0,
       isAllCompletedTasks: false,
       filter: 'All',
     };
-
+    //TODO что бы избаваить от этой горы привязок this лучше использовать стрелочные функции.
+    // https://learn.javascript.ru/arrow-functions-basics подробно про них можно почитать тут
     this.handleAddTaskChange = this.handleAddTaskChange.bind(this);
     this.handleChangeTaskMarkChange = this.handleChangeTaskMarkChange.bind(this);
     this.handleRemoveTaskChange = this.handleRemoveTaskChange.bind(this);
@@ -28,6 +29,10 @@ class TodoApp extends React.Component {
   static lastId = 0;
 
   handleAddTaskChange(description) {
+
+    //TODO можно заменить вот такой строкой: const { taskList } = this.state;
+    // Аналогично в переменной taskList окажется копия массива из стейта taskList
+    // https://learn.javascript.ru/destructuring тут можно подробнее посмотретьк как это работает
     const taskList = this._copyTaskList();
 
     taskList.push({
@@ -35,12 +40,13 @@ class TodoApp extends React.Component {
       description,
       isDone: false,
     });
-
+    // TODO не совсем понимаю зачем .slice(), нужен ли он?
     this.setState( {
       taskList: taskList.slice()
     });
 
     TodoApp.lastId += 1;
+    // TODO можно объеденить эти две функции в одну, в каждой идет перебор одного и того же массива
     this.updateActiveItemsCounter();
     this.updateIsAllCompletedTasks();
   }
@@ -48,7 +54,7 @@ class TodoApp extends React.Component {
 
   handleRemoveTaskChange(id) {
     let itemNumber;
-
+    // TODO так лучше не делать, случайно можно мутировать значение в стейт, лучше достать массив в переменную и к переменной применять map
     let taskList = this.state.taskList.map((task, index) => {
       if (task.id === id) itemNumber = index;
       return task;
@@ -73,7 +79,7 @@ class TodoApp extends React.Component {
         if (!task.isDone) counter += 1;
         return task;
       });
-      
+
       return {activeItemsCounter: counter}
     });
   }
@@ -146,6 +152,8 @@ class TodoApp extends React.Component {
   }
 
   updateIsAllCompletedTasks() {
+    //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
+    // из полученных перменных
     this.setState((state) => {
       let allTaskCount = 0;
       let completedTaskCount = 0;
@@ -205,10 +213,10 @@ class TodoApp extends React.Component {
         if (task.id === id) {
             task.description = description;
         }
-  
+
         return task;
       });
-  
+
       this.setState({
         taskList: taskList.slice()
       });
