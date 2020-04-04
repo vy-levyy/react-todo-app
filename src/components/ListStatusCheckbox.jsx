@@ -1,13 +1,7 @@
 import React from 'react';
 
 class ListStatusCheckbox extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange() {
+  handleChange = () => {
     this.props.onChangeAllTaskMarksChange();
   }
 

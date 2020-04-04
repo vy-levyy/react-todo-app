@@ -1,17 +1,12 @@
 import React from 'react';
 
 class EntryField extends React.Component {
-  constructor(props) {
-    super(props);
+  handleKeyPress = (e) => {
+    const {value} = e.target;
 
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    // TODO можно так же использовать деструктуризацию const {value} = e.target
     if (e.key === 'Enter') {
-      if (e.target.value.trim() !== '') {
-        this.props.onAddTaskChange(e.target.value);
+      if (value.trim() !== '') {
+        this.props.onAddTaskChange(value);
         e.target.value = '';
       }
     }
@@ -22,7 +17,7 @@ class EntryField extends React.Component {
       <input
         type="text"
         placeholder="What needs to be done?"
-        onKeyPress={this.handleChange}
+        onKeyPress={this.handleKeyPress}
         autoFocus
       />
     );

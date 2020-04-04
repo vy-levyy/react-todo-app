@@ -1,20 +1,13 @@
 import React from 'react';
 
 class ClearCompletedItemsButton extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange() {
+  handleClick = () => {
     this.props.onRemoveCompletedTasksChange();
   }
 
   render() {
     return (
-      <button onClick={this.handleChange}>Clear completed</button>
+      <button onClick={this.handleClick}>Clear completed</button>
     );
   }
 }

@@ -8,37 +8,41 @@ class ListItemTaskDescription extends React.Component {
       description: this.props.description,
       isEdit: false
     };
-
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
-  handleDoubleClick() {
+  handleDoubleClick = () => {
     this.setState({
       isEdit: true
     });
   }
 
-  handleBlur(e) {
+  handleBlur = (e) => {
     this.setState({
       isEdit: false
     });
 
     this.props.onChangeTaskDescriptionChange(this.props.taskId, e.target.value);
+
+    this.setState({
+      description: e.target.value.trim()
+    });
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
     this.setState({
       description: e.target.value
-    })
+    });
   }
 
-  handleKeyPress(e) {
+  handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.onChangeTaskDescriptionChange(this.props.taskId, e.target.value);
+
       e.target.blur();
+      
+      this.setState({
+        description: e.target.value.trim()
+      });
     }
   }
 

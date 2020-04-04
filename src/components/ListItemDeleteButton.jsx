@@ -1,17 +1,12 @@
 import React from 'react';
 
 class ListItemDeleteButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange() {
+  handleClick = () => {
     this.props.onRemoveTaskChange(this.props.taskId);
   }
 
   render() {
-    return <button onClick={this.handleChange}>&#10006;</button>;
+    return <button onClick={this.handleClick}>&#10006;</button>;
   }
 }
 

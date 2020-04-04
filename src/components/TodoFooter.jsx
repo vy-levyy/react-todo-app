@@ -4,8 +4,6 @@ import Filter from './Filter.jsx';
 import ClearCompletedItemsButton from './ClearCompletedItemsButton.jsx';
 
 class TodoFooter extends React.Component {
-
-
   render() {
     let clearCompletedItemsButton = '';
     

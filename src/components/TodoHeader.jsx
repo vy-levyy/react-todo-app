@@ -4,13 +4,13 @@ import ListStatusCheckbox from './ListStatusCheckbox.jsx'
 
 class TodoHeader extends React.Component {
   render() {
-
     let listStatusCheckbox = '';
+
     if (this.props.shouldShowListStatusCheckbox) {
       listStatusCheckbox = (
         <ListStatusCheckbox
           isChecked={this.props.shouldActiveListStatusCheckbox}
-          onChangeAllTaskMarksChange={this.props.handlerChangeAllTaskMarksChange}
+          onChangeAllTaskMarksChange={this.props.handleChangeAllTaskMarksChange}
         />
       );
     }

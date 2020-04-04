@@ -15,103 +15,16 @@ class TodoApp extends React.Component {
       isAllCompletedTasks: false,
       filter: 'All',
     };
-    //TODO что бы избаваить от этой горы привязок this лучше использовать стрелочные функции.
-    // https://learn.javascript.ru/arrow-functions-basics подробно про них можно почитать тут
-    this.handleAddTaskChange = this.handleAddTaskChange.bind(this);
-    this.handleChangeTaskMarkChange = this.handleChangeTaskMarkChange.bind(this);
-    this.handleRemoveTaskChange = this.handleRemoveTaskChange.bind(this);
-    this.handleChangeFilterChange = this.handleChangeFilterChange.bind(this);
-    this.handleRemoveCompletedTasksChange = this.handleRemoveCompletedTasksChange.bind(this);
-    this.handlerChangeAllTaskMarksChange = this.handlerChangeAllTaskMarksChange.bind(this);
-    this.handleChangeTaskDescriptionChange = this.handleChangeTaskDescriptionChange.bind(this);
   }
+
 
   static lastId = 0;
 
-  handleAddTaskChange(description) {
-
-    //TODO можно заменить вот такой строкой: const { taskList } = this.state;
-    // Аналогично в переменной taskList окажется копия массива из стейта taskList
-    // https://learn.javascript.ru/destructuring тут можно подробнее посмотретьк как это работает
-    const taskList = this._copyTaskList();
-
-    taskList.push({
-      id: TodoApp.lastId,
-      description,
-      isDone: false,
-    });
-    // TODO не совсем понимаю зачем .slice(), нужен ли он?
-    this.setState( {
-      taskList: taskList.slice()
-    });
-
-    TodoApp.lastId += 1;
-    // TODO можно объеденить эти две функции в одну, в каждой идет перебор одного и того же массива
-    this.updateActiveItemsCounter();
-    this.updateIsAllCompletedTasks();
-  }
-
-
-  handleRemoveTaskChange(id) {
-    let itemNumber;
-    // TODO так лучше не делать, случайно можно мутировать значение в стейт, лучше достать массив в переменную и к переменной применять map
-    let taskList = this.state.taskList.map((task, index) => {
-      if (task.id === id) itemNumber = index;
-      return task;
-    });
-
-    taskList.splice(itemNumber, 1)
-
-    this.setState({
-      taskList: taskList.slice()
-    });
-
-    this.updateActiveItemsCounter();
-    this.updateIsAllCompletedTasks();
-  }
-
-
-  updateActiveItemsCounter() {
-    this.setState((state) => {
-      let counter = 0;
-
-      state.taskList.map((task) => {
-        if (!task.isDone) counter += 1;
-        return task;
-      });
-
-      return {activeItemsCounter: counter}
-    });
-  }
-
-
-  handleChangeTaskMarkChange(id) {
-    let taskList = this.state.taskList.map((task) => {
-      if (task.id === id) task.isDone = !task.isDone;
-      return task;
-    });
-
-    this.setState({
-      taskList: taskList.slice()
-    });
-
-    this.updateActiveItemsCounter();
-    this.updateIsAllCompletedTasks();
-  }
-
-
-  isEmptyTaskList() {
-    return !Boolean(this.state.taskList.length);
-  }
-
-  handleChangeFilterChange(filterStatus) {
-    this.setState({
-      filter: filterStatus
-    });
-  }
 
   getTaskList(filter) {
-    return this.state.taskList.filter((task) => {
+    const {taskList} = this.state;
+
+    return taskList.filter((task) => {
       if (filter === 'All') return true;
       if (filter === 'Active' && !task.isDone) return true;
       if (filter === 'Completed' && task.isDone) return true;
@@ -121,9 +34,10 @@ class TodoApp extends React.Component {
   }
 
   hasCompletedTasks() {
+    const {taskList} = this.state;
     let hasCompletedTasks = false;
 
-    this.state.taskList.map((task) => {
+    taskList.map((task) => {
       if (task.isDone) hasCompletedTasks = true;
       return task;
     });
@@ -131,39 +45,18 @@ class TodoApp extends React.Component {
     return hasCompletedTasks;
   }
 
-  handleRemoveCompletedTasksChange() {
-    let taskList = this.state.taskList.filter((task) => {
-      if (task.isDone) {
-        return false;
-      }
-
-      return true;
-    });
-
-    this.setState({
-      taskList: taskList.slice()
-    });
-
-    this.updateIsAllCompletedTasks();
-  }
-
-  _copyTaskList() {
-    return this.state.taskList.slice();
-  }
-
-  updateIsAllCompletedTasks() {
-    //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
-    // из полученных перменных
+  updateStates() {
     this.setState((state) => {
+      const {taskList} = state;
       let allTaskCount = 0;
       let completedTaskCount = 0;
+      let activeItemsCounter = 0;
 
-      state.taskList.map((task) => {
+      taskList.map((task) => {
         allTaskCount += 1;
 
-        if (task.isDone) {
-          completedTaskCount += 1;
-        }
+        if (task.isDone) completedTaskCount += 1;
+        else activeItemsCounter += 1;
 
         return task;
       });
@@ -177,15 +70,120 @@ class TodoApp extends React.Component {
         }
       }
 
-      return {isAllCompletedTasks};
+      return {
+        isAllCompletedTasks,
+        activeItemsCounter
+      };
     });
   }
 
+  isEmptyTaskList() {
+    return !Boolean(this.state.taskList.length);
+  }
 
-  handlerChangeAllTaskMarksChange() {
-    let taskList = this.state.taskList;
 
-    if (this.state.isAllCompletedTasks) {
+
+  handleAddTaskChange = (description) => {
+    const {taskList} = this.state;
+
+    taskList.push({
+      description,
+      id: TodoApp.lastId,
+      isDone: false,
+    });
+
+    this.setState({taskList});
+
+    TodoApp.lastId += 1;
+    // TODO можно объеденить эти две функции в одну, в каждой идет перебор одного и того же массива
+    //
+    // разве не должна функция выполнять одно действие?:)) да и есть место в программе, когда, к примеру,
+    // нужно только одно состояние обновить, а не два, то есть повтор кода усложняется
+    // или ты имел в виду, что сам вызов этих двух функций можно просто переместить в одну?
+    this.updateStates();
+  }
+
+  handleRemoveTaskChange = (id) => {
+    let {taskList} = this.state;
+    let itemNumber;
+
+    taskList = taskList.map((task, index) => {
+      if (task.id === id) itemNumber = index;
+      return task;
+    });
+
+    taskList.splice(itemNumber, 1)
+
+    this.setState({taskList});
+    this.updateStates();
+  }
+
+  handleChangeTaskMarkChange = (id) => {
+    let {taskList} = this.state;
+
+    taskList = taskList.map((task) => {
+      if (task.id === id) task.isDone = !task.isDone;
+      return task;
+    });
+
+    this.setState({taskList});
+    this.updateStates();
+  }
+
+  handleChangeFilterChange = (filterStatus) => {
+    this.setState({filter: filterStatus});
+  }
+
+  handleRemoveCompletedTasksChange = () => {
+    let {taskList} = this.state;
+
+    taskList = taskList.filter((task) => {
+      return task.isDone ? false : true;
+    });
+
+    this.setState({taskList});
+    this.updateStates();
+  }
+
+  // updateIsAllCompletedTasks() {
+  //   //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
+  //   // из полученных перменных
+  //   //
+  //   // пробовал так сделать, но мне же нужно делать подсчет на основе предыдущего состояния через state, а его, я так понимаю,
+  //   // можно получить только в this.setState, по другому - выскакивают баги. Или я что-то недопонял?
+  //   this.setState((state) => {
+  //     const {taskList} = state;
+  //     let allTaskCount = 0;
+  //     let completedTaskCount = 0;
+
+  //     taskList.map((task) => {
+  //       allTaskCount += 1;
+
+  //       if (task.isDone) {
+  //         completedTaskCount += 1;
+  //       }
+
+  //       return task;
+  //     });
+
+
+  //     let isAllCompletedTasks = false;
+
+  //     if (allTaskCount !== 0) {
+  //       if (allTaskCount === completedTaskCount) {
+  //         isAllCompletedTasks = true;
+  //       }
+  //     }
+
+  //     return {isAllCompletedTasks};
+  //   });
+  // }
+
+  handleChangeAllTaskMarksChange = () => {
+    let {taskList} = this.state;
+    const {isAllCompletedTasks} = this.state;
+
+    if (isAllCompletedTasks) {
       taskList = taskList.map((task) => {
         task.isDone = false;
         return task;
@@ -197,19 +195,17 @@ class TodoApp extends React.Component {
       });
     }
 
-    this.setState({
-      taskList: taskList.slice()
-    });
-
-    this.updateActiveItemsCounter();
-    this.updateIsAllCompletedTasks();
+    this.setState({taskList});
+    this.updateStates();
   }
 
+  handleChangeTaskDescriptionChange = (id, description) => {
+    description = description.trim();
 
-  handleChangeTaskDescriptionChange(id, description) {
+    if (description !== '') {
+      let {taskList} = this.state;
 
-    if (description.trim() !== '') {
-      let taskList = this.state.taskList.map((task) => {
+      taskList = taskList.map((task) => {
         if (task.id === id) {
             task.description = description;
         }
@@ -217,9 +213,7 @@ class TodoApp extends React.Component {
         return task;
       });
 
-      this.setState({
-        taskList: taskList.slice()
-      });
+      this.setState({taskList});
     } else {
       this.handleRemoveTaskChange(id);
     }
@@ -249,7 +243,7 @@ class TodoApp extends React.Component {
           handleAddTaskChange={this.handleAddTaskChange}
           shouldShowListStatusCheckbox={!this.isEmptyTaskList()}
           shouldActiveListStatusCheckbox={this.state.isAllCompletedTasks}
-          handlerChangeAllTaskMarksChange={this.handlerChangeAllTaskMarksChange}
+          handleChangeAllTaskMarksChange={this.handleChangeAllTaskMarksChange}
         />
         <List
           taskList={this.getTaskList(this.state.filter)}

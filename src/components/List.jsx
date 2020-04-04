@@ -2,14 +2,9 @@ import React from 'react';
 import ListItem from './ListItem.jsx';
 
 class List extends React.Component {
-  // constructor(props) {
-  //   super(props);
-
-
-  // }
-
   render() {
-    const taskList = this.props.taskList;
+    const {taskList} = this.props;
+    
     const listItems = taskList.map((task) => {
       return (
         <ListItem 

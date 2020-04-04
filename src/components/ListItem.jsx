@@ -5,7 +5,7 @@ import ListItemDeleteButton from './ListItemDeleteButton';
 
 class ListItem extends React.Component {
   render() {
-    const task = this.props.task;
+    const { task } = this.props;
 
     return (
       <li>

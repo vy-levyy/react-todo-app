@@ -1,16 +1,13 @@
 import React from 'react';
 
 class Filter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
+  handleChange = (e) => {
     this.props.onChangeFilterChange(e.target.value);
   }
 
   render() {
+    const {filter} = this.props;
+
     return (
       <div>
         <label>
@@ -18,7 +15,7 @@ class Filter extends React.Component {
             type="radio"
             name="filter"
             id="allItems"
-            checked={this.props.filter === 'All'}
+            checked={filter === 'All'}
             onChange={this.handleChange}
             value="All"
           />
@@ -29,7 +26,7 @@ class Filter extends React.Component {
             type="radio"
             name="filter"
             id="activeItems"
-            checked={this.props.filter === 'Active'}
+            checked={filter === 'Active'}
             onChange={this.handleChange}
             value="Active"
           />
@@ -40,7 +37,7 @@ class Filter extends React.Component {
             type="radio"
             name="filter"
             id="completedItems"
-            checked={this.props.filter === 'Completed'}
+            checked={filter === 'Completed'}
             onChange={this.handleChange}
             value="Completed"
           />
