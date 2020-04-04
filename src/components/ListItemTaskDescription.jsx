@@ -17,15 +17,21 @@ class ListItemTaskDescription extends React.Component {
   }
 
   handleBlur = (e) => {
+    const value = e.target.value.trim();
+
     this.setState({
       isEdit: false
     });
 
-    this.props.onChangeTaskDescriptionChange(this.props.taskId, e.target.value);
+    if (value !== '') {
+      this.props.onChangeTaskDescriptionChange(this.props.taskId, value);
 
-    this.setState({
-      description: e.target.value.trim()
-    });
+      this.setState({
+        description: value
+      });
+    } else {
+      this.props.onRemoveTaskChange(this.props.taskId);
+    }
   }
 
   handleChange = (e) => {
