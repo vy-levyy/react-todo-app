@@ -8,6 +8,7 @@ class EntryField extends React.Component {
   }
 
   handleChange(e) {
+    // TODO можно так же использовать деструктуризацию const {value} = e.target
     if (e.key === 'Enter') {
       if (e.target.value.trim() !== '') {
         this.props.onAddTaskChange(e.target.value);
