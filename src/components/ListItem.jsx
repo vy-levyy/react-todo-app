@@ -18,6 +18,7 @@ class ListItem extends React.Component {
           taskId={task.id}
           description={task.description}
           onChangeTaskDescriptionChange={this.props.handleChangeTaskDescriptionChange}
+          onRemoveTaskChange={this.props.handleRemoveTaskChange}
         />
         <ListItemDeleteButton 
           taskId={task.id}

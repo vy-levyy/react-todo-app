@@ -5,6 +5,17 @@ import List from './List.jsx';
 import TodoFooter from './TodoFooter.jsx';
 
 
+const successfullyNotificationMap = new Map([
+  [0, 'Task added successfully!'],
+  [1, 'Task removed successfully!'],
+  [2, 'Task mark changed successfully!'],
+  [3, 'Filter changed successfully!'],
+  [4, 'Completed tasks removed successfully!'],
+  [5, 'Task list mark changed successfully!'],
+  [6, 'Task description changed successfully!'],
+]);
+
+
 class TodoApp extends React.Component {
   constructor(props) {
     super(props)
@@ -16,6 +27,7 @@ class TodoApp extends React.Component {
       completedItemsCounter: 0,
       isAllCompletedTasks: false,
       filter: 'All',
+      notificationStatus: '',
     };
   }
 
@@ -71,7 +83,7 @@ class TodoApp extends React.Component {
   updateIsAllCompletedTasks() {
     this.setState((state) => {
       return {
-        isAllCompletedTasks: state.itemsCounter === state.completedItemsCounter
+        isAllCompletedTasks: state.itemsCounter !== 0 && state.itemsCounter === state.completedItemsCounter
       }
     });
   }
@@ -82,7 +94,11 @@ class TodoApp extends React.Component {
   }
 
   isEmptyTaskList() {
-    return !Boolean(this.state.taskList.length);
+    return !Boolean(this.state.itemsCounter);
+  }
+
+  setNotificationStatus(notificationStatus) {
+    this.setState({notificationStatus});
   }
 
 
@@ -99,12 +115,8 @@ class TodoApp extends React.Component {
     this.setState({taskList});
 
     TodoApp.lastId += 1;
-    // TODO можно объеденить эти две функции в одну, в каждой идет перебор одного и того же массива
-    //
-    // разве не должна функция выполнять одно действие?:)) да и есть место в программе, когда, к примеру,
-    // нужно только одно состояние обновить, а не два, то есть повтор кода усложняется
-    // или ты имел в виду, что сам вызов этих двух функций можно просто переместить в одну?
     this.updateStates();
+    this.setNotificationStatus(successfullyNotificationMap.get(0));
   }
 
   handleRemoveTaskChange = (id) => {
@@ -120,6 +132,7 @@ class TodoApp extends React.Component {
 
     this.setState({taskList});
     this.updateStates();
+    this.setNotificationStatus(successfullyNotificationMap.get(1));
   }
 
   handleChangeTaskMarkChange = (id) => {
@@ -132,10 +145,12 @@ class TodoApp extends React.Component {
 
     this.setState({taskList});
     this.updateStates();
+    this.setNotificationStatus(successfullyNotificationMap.get(2));
   }
 
   handleChangeFilterChange = (filterStatus) => {
     this.setState({filter: filterStatus});
+    this.setNotificationStatus(successfullyNotificationMap.get(3));
   }
 
   handleRemoveCompletedTasksChange = () => {
@@ -147,41 +162,8 @@ class TodoApp extends React.Component {
 
     this.setState({taskList});
     this.updateStates();
+    this.setNotificationStatus(successfullyNotificationMap.get(4));
   }
-
-  // updateIsAllCompletedTasks() {
-  //   //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
-  //   // из полученных перменных
-  //   //
-  //   // пробовал так сделать, но мне же нужно делать подсчет на основе предыдущего состояния через state, а его, я так понимаю,
-  //   // можно получить только в this.setState, по другому - выскакивают баги. Или я что-то недопонял?
-  //   this.setState((state) => {
-  //     const {taskList} = state;
-  //     let allTaskCount = 0;
-  //     let completedTaskCount = 0;
-
-  //     taskList.map((task) => {
-  //       allTaskCount += 1;
-
-  //       if (task.isDone) {
-  //         completedTaskCount += 1;
-  //       }
-
-  //       return task;
-  //     });
-
-
-  //     let isAllCompletedTasks = false;
-
-  //     if (allTaskCount !== 0) {
-  //       if (allTaskCount === completedTaskCount) {
-  //         isAllCompletedTasks = true;
-  //       }
-  //     }
-
-  //     return {isAllCompletedTasks};
-  //   });
-  // }
 
   handleChangeAllTaskMarksChange = () => {
     let {taskList} = this.state;
@@ -201,26 +183,24 @@ class TodoApp extends React.Component {
 
     this.setState({taskList});
     this.updateStates();
+    this.setNotificationStatus(successfullyNotificationMap.get(5));
   }
 
   handleChangeTaskDescriptionChange = (id, description) => {
     description = description.trim();
 
-    if (description !== '') {
-      let {taskList} = this.state;
+    let {taskList} = this.state;
 
-      taskList = taskList.map((task) => {
-        if (task.id === id) {
-            task.description = description;
-        }
+    taskList = taskList.map((task) => {
+      if (task.id === id) {
+          task.description = description;
+      }
 
-        return task;
-      });
+      return task;
+    });
 
-      this.setState({taskList});
-    } else {
-      this.handleRemoveTaskChange(id);
-    }
+    this.setState({taskList});
+    this.setNotificationStatus(successfullyNotificationMap.get(6));
   }
 
 
@@ -258,9 +238,45 @@ class TodoApp extends React.Component {
           handleChangeTaskDescriptionChange={this.handleChangeTaskDescriptionChange}
         />
         {todoFooter}
+        {this.state.notificationStatus}
       </div>
     );
   }
 }
 
 export default TodoApp;
+
+
+// updateIsAllCompletedTasks() {
+  //   //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
+  //   // из полученных перменных
+  //   //
+  //   // пробовал так сделать, но мне же нужно делать подсчет на основе предыдущего состояния через state, а его, я так понимаю,
+  //   // можно получить только в this.setState, по другому - выскакивают баги. Или я что-то недопонял?
+  //   this.setState((state) => {
+  //     const {taskList} = state;
+  //     let allTaskCount = 0;
+  //     let completedTaskCount = 0;
+
+  //     taskList.map((task) => {
+  //       allTaskCount += 1;
+
+  //       if (task.isDone) {
+  //         completedTaskCount += 1;
+  //       }
+
+  //       return task;
+  //     });
+
+
+  //     let isAllCompletedTasks = false;
+
+  //     if (allTaskCount !== 0) {
+  //       if (allTaskCount === completedTaskCount) {
+  //         isAllCompletedTasks = true;
+  //       }
+  //     }
+
+  //     return {isAllCompletedTasks};
+  //   });
+  // }
