@@ -16,7 +16,9 @@ class TodoFooter extends React.Component {
     
     return (
       <div>
-        <Counter value={this.props.activeItemsCounter}/>
+        <Counter value={this.props.itemsCounter}> items</Counter>
+        <Counter value={this.props.activeItemsCounter}> items left</Counter>
+        <Counter value={this.props.completedItemsCounter}> items completed</Counter>
         <Filter
           filter={this.props.filter}
           onChangeFilterChange={this.props.handleChangeFilterChange}

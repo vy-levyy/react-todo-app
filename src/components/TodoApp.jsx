@@ -11,7 +11,9 @@ class TodoApp extends React.Component {
 
     this.state = {
       taskList: [],
+      itemsCounter: 0,
       activeItemsCounter: 0,
+      completedItemsCounter: 0,
       isAllCompletedTasks: false,
       filter: 'All',
     };
@@ -45,36 +47,38 @@ class TodoApp extends React.Component {
     return hasCompletedTasks;
   }
 
-  updateStates() {
+  updateCounters() {
     this.setState((state) => {
       const {taskList} = state;
-      let allTaskCount = 0;
-      let completedTaskCount = 0;
       let activeItemsCounter = 0;
+      let completedItemsCounter = 0;
 
       taskList.map((task) => {
-        allTaskCount += 1;
-
-        if (task.isDone) completedTaskCount += 1;
-        else activeItemsCounter += 1;
+        if (!task.isDone) activeItemsCounter += 1;
+        if (task.isDone) completedItemsCounter += 1;
 
         return task;
       });
 
-
-      let isAllCompletedTasks = false;
-
-      if (allTaskCount !== 0) {
-        if (allTaskCount === completedTaskCount) {
-          isAllCompletedTasks = true;
-        }
-      }
-
       return {
-        isAllCompletedTasks,
-        activeItemsCounter
+        activeItemsCounter,
+        completedItemsCounter,
+        itemsCounter: activeItemsCounter + completedItemsCounter,
       };
     });
+  }
+
+  updateIsAllCompletedTasks() {
+    this.setState((state) => {
+      return {
+        isAllCompletedTasks: state.itemsCounter === state.completedItemsCounter
+      }
+    });
+  }
+
+  updateStates() {
+    this.updateCounters();
+    this.updateIsAllCompletedTasks();
   }
 
   isEmptyTaskList() {
@@ -227,7 +231,9 @@ class TodoApp extends React.Component {
     if (!this.isEmptyTaskList()) {
       todoFooter = (
         <TodoFooter
+          itemsCounter={this.state.itemsCounter}
           activeItemsCounter={this.state.activeItemsCounter}
+          completedItemsCounter={this.state.completedItemsCounter}
           filter={this.state.filter}
           handleChangeFilterChange={this.handleChangeFilterChange}
           shouldShowClearCompletedItemsButton={this.hasCompletedTasks()}

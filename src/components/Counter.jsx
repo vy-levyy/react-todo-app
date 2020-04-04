@@ -2,7 +2,7 @@ import React from 'react';
 
 class Counter extends React.Component {
   render() {
-    return <div>{this.props.value} items left</div>;
+    return <div>{this.props.value} {this.props.children}</div>;
   }
 }
 
