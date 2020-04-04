@@ -235,7 +235,7 @@ class TodoApp extends React.Component {
     }
 
     return (
-      <div>
+      <div className="container">
         <Logo />
         <TodoHeader
           handleAddTaskChange={this.handleAddTaskChange}
