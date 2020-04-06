@@ -1,0 +1,20 @@
+.filter {
+  display: none;
+}
+
+.filter-button {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0 7px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  border-color: rgba(175, 47, 47, 0.1);
+}
+
+.active-filter-button,
+.active-filter-button:hover {
+  border-color: rgba(175, 47, 47, 0.2);
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import './Filter.css';
 
 class Filter extends React.Component {
   handleChange = (e) => {
@@ -9,9 +10,10 @@ class Filter extends React.Component {
     const {filter} = this.props;
 
     return (
-      <div>
-        <label>
+      <div className={this.props.className}>
+        <label className={"filter-button" + (filter === 'All' ? " active-filter-button" : "")}>
           <input
+            className="filter"
             type="radio"
             name="filter"
             id="allItems"
@@ -21,8 +23,9 @@ class Filter extends React.Component {
           />
           All
         </label>
-        <label>
+        <label className={"filter-button" + (filter === 'Active' ? " active-filter-button" : "")}>
           <input
+            className="filter"
             type="radio"
             name="filter"
             id="activeItems"
@@ -32,8 +35,9 @@ class Filter extends React.Component {
           />
           Active
         </label>
-        <label>
+        <label className={"filter-button" + (filter === 'Completed' ? " active-filter-button" : "")}>
           <input
+            className="filter"
             type="radio"
             name="filter"
             id="completedItems"

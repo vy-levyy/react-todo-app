@@ -1,4 +1,5 @@
 import React from 'react';
+import './ClearCompletedItemsButton.css'
 
 class ClearCompletedItemsButton extends React.Component {
   handleClick = () => {
@@ -7,7 +8,12 @@ class ClearCompletedItemsButton extends React.Component {
 
   render() {
     return (
-      <button onClick={this.handleClick}>Clear completed</button>
+      <button
+        className="clear-completed-items-button"
+        onClick={this.handleClick}
+      >
+        Clear completed
+      </button>
     );
   }
 }

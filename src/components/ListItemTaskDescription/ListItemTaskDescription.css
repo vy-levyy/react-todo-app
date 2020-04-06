@@ -1,0 +1,17 @@
+.list-item-task-description {
+  font-size: 24px;
+  color: #4D4D4D;
+  padding: 0 16px;
+  transition: 0.3s;
+  overflow: hidden;
+}
+
+.checked-list-item-task-description {
+  color: #d9d9d9;
+  text-decoration: line-through;
+  transition: 0.3s;
+}
+
+.list-item-task-description-input {
+  padding: 0 14px;
+}

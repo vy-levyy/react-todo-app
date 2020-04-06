@@ -1,4 +1,5 @@
 import React from 'react';
+import './EntryField.css';
 
 class EntryField extends React.Component {
   handleKeyPress = (e) => {
@@ -15,6 +16,7 @@ class EntryField extends React.Component {
   render() {
     return (
       <input
+        className={this.props.className + " entry-field"}
         type="text"
         placeholder="What needs to be done?"
         onKeyPress={this.handleKeyPress}

@@ -1,0 +1,14 @@
+.clear-completed-items-button {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: #777;
+}
+
+.clear-completed-items-button:hover {
+  text-decoration: underline;
+}
+
+.clear-completed-items-button:focus {
+  outline: none;
+}

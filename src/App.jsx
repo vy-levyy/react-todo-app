@@ -1,8 +1,8 @@
 import React from 'react';
-import TodoApp from './components/TodoApp.jsx';
+import TodoApp from './components/TodoApp/TodoApp.jsx';
 
 function App() {
-  return <TodoApp />
+  return <TodoApp className="container"/>;
 }
 
 export default App;

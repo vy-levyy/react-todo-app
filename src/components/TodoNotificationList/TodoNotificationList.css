@@ -1,0 +1,6 @@
+.todo-notification-list {
+  position: fixed;
+  right: 17px;
+  top: 2px;
+  z-index: 1000;
+}

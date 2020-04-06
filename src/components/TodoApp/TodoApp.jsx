@@ -1,9 +1,10 @@
 import React from 'react';
-import Logo from './Logo.jsx';
-import TodoHeader from './TodoHeader.jsx';
-import List from './List.jsx';
-import TodoFooter from './TodoFooter.jsx';
-import TodoNotification from './TodoNotification.jsx';
+import Logo from '../Logo.jsx';
+import TodoHeader from '../TodoHeader/TodoHeader.jsx';
+import List from '../List.jsx';
+import TodoFooter from '../TodoFooter/TodoFooter.jsx';
+import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
+import './TodoApp.css';
 
 
 const successfullyNotificationMap = new Map([
@@ -204,6 +205,7 @@ class TodoApp extends React.Component {
     if (!this.isEmptyTaskList()) {
       todoFooter = (
         <TodoFooter
+          className="row justify-content-center"
           itemsCounter={this.state.itemsCounter}
           activeItemsCounter={this.state.activeItemsCounter}
           completedItemsCounter={this.state.completedItemsCounter}
@@ -216,60 +218,33 @@ class TodoApp extends React.Component {
     }
 
     return (
-      <div className="container">
-        <Logo />
-        <TodoHeader
-          handleAddTaskChange={this.handleAddTaskChange}
-          shouldShowListStatusCheckbox={!this.isEmptyTaskList()}
-          shouldActiveListStatusCheckbox={this.state.isAllCompletedTasks}
-          handleChangeAllTaskMarksChange={this.handleChangeAllTaskMarksChange}
-        />
-        <List
-          taskList={this.getTaskList(this.state.filter)}
-          handleChangeTaskMarkChange={this.handleChangeTaskMarkChange}
-          handleRemoveTaskChange={this.handleRemoveTaskChange}
-          handleChangeTaskDescriptionChange={this.handleChangeTaskDescriptionChange}
-        />
-        {todoFooter}
-        <TodoNotification>{this.state.notificationStatus}</TodoNotification>
+      <div className={this.props.className + " todo-app"}>
+        <TodoNotificationList className="row">
+          {this.state.notificationStatus}
+        </TodoNotificationList>
+        <Logo className="row"/>
+        <div className="row todo-wrap">
+          <div className="col">
+            <TodoHeader
+              className="row align-items-center"
+              handleAddTaskChange={this.handleAddTaskChange}
+              shouldShowListStatusCheckbox={!this.isEmptyTaskList()}
+              shouldActiveListStatusCheckbox={this.state.isAllCompletedTasks}
+              handleChangeAllTaskMarksChange={this.handleChangeAllTaskMarksChange}
+            />
+            <List
+              className="row"
+              taskList={this.getTaskList(this.state.filter)}
+              handleChangeTaskMarkChange={this.handleChangeTaskMarkChange}
+              handleRemoveTaskChange={this.handleRemoveTaskChange}
+              handleChangeTaskDescriptionChange={this.handleChangeTaskDescriptionChange}
+            />
+            {todoFooter}
+          </div>
+        </div>
       </div>
     );
   }
 }
 
 export default TodoApp;
-
-
-// updateIsAllCompletedTasks() {
-  //   //TODO я бы вынес логику расчета стейтов над this.setState, а в самом this.setState уже назначал только значения сейтов
-  //   // из полученных перменных
-  //   //
-  //   // пробовал так сделать, но мне же нужно делать подсчет на основе предыдущего состояния через state, а его, я так понимаю,
-  //   // можно получить только в this.setState, по другому - выскакивают баги. Или я что-то недопонял?
-  //   this.setState((state) => {
-  //     const {taskList} = state;
-  //     let allTaskCount = 0;
-  //     let completedTaskCount = 0;
-
-  //     taskList.map((task) => {
-  //       allTaskCount += 1;
-
-  //       if (task.isDone) {
-  //         completedTaskCount += 1;
-  //       }
-
-  //       return task;
-  //     });
-
-
-  //     let isAllCompletedTasks = false;
-
-  //     if (allTaskCount !== 0) {
-  //       if (allTaskCount === completedTaskCount) {
-  //         isAllCompletedTasks = true;
-  //       }
-  //     }
-
-  //     return {isAllCompletedTasks};
-  //   });
-  // }

@@ -1,6 +1,7 @@
 import React from 'react';
-import EntryField from './EntryField.jsx';
-import ListStatusCheckbox from './ListStatusCheckbox.jsx'
+import EntryField from '../EntryField/EntryField.jsx';
+import ListStatusCheckbox from '../ListStatusCheckbox/ListStatusCheckbox.jsx'
+import './TodoHeader.css';
 
 class TodoHeader extends React.Component {
   render() {
@@ -16,9 +17,9 @@ class TodoHeader extends React.Component {
     }
 
     return (
-      <div>
-        <div>{listStatusCheckbox}</div>
-        <EntryField onAddTaskChange={this.props.handleAddTaskChange}/>
+      <div className={this.props.className + " todo-header"}>
+        <div className="col-1">{listStatusCheckbox}</div>
+        <EntryField className = "col" onAddTaskChange={this.props.handleAddTaskChange}/>
       </div>
     );
   }

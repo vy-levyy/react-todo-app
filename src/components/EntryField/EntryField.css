@@ -1,0 +1,10 @@
+.entry-field {
+  font-size: 24px;
+  border: none;
+  color: #4D4D4D;
+}
+
+.entry-field::placeholder {
+  font-style: italic;
+  color: #e6e6e6;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import ListItem from './ListItem.jsx';
+import ListItem from './ListItem/ListItem.jsx';
 
 class List extends React.Component {
   render() {
@@ -7,7 +7,8 @@ class List extends React.Component {
     
     const listItems = taskList.map((task) => {
       return (
-        <ListItem 
+        <ListItem
+          className="row align-items-center"
           task={task}
           key={task.id}
           handleChangeTaskMarkChange={this.props.handleChangeTaskMarkChange}
@@ -17,7 +18,20 @@ class List extends React.Component {
       );
     });
 
-    return <ul>{listItems}</ul>;
+    const listStyle={
+      paddingLeft: '0',
+    };
+
+    return (
+      <ul
+        className={this.props.className}
+        style={listStyle}
+      >
+        <div className="col">
+          {listItems}
+        </div>
+      </ul>
+    );
   }
 }
 
