@@ -6,7 +6,7 @@ import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
 import './TodoApp.css';
 
-
+// TODO можно вынести в отдельный файл и импортировать его в этот
 const successfullyNotificationMap = new Map([
   [0, 'Task added successfully!'],
   [1, 'Task removed successfully!'],
@@ -41,6 +41,7 @@ class TodoApp extends React.Component {
     const {taskList} = this.state;
 
     return taskList.filter((task) => {
+      // TODO лучше заменить на switch
       if (filter === 'All') return true;
       if (filter === 'Active' && !task.isDone) return true;
       if (filter === 'Completed' && task.isDone) return true;
@@ -151,6 +152,7 @@ class TodoApp extends React.Component {
     let {taskList} = this.state;
 
     taskList = taskList.filter((task) => {
+      //TODO !task.isDone даст тот же результат
       return task.isDone ? false : true;
     });
 
@@ -162,7 +164,11 @@ class TodoApp extends React.Component {
   handleChangeAllTaskMarksChange = () => {
     let {taskList} = this.state;
     const {isAllCompletedTasks} = this.state;
-
+    // TODO если в isAllCompletedTasks булево значение , то можно сделать так:
+   /* taskList = taskList.map((task) => {
+      task.isDone = isAllCompletedTasks;
+      return task;
+    }); */
     if (isAllCompletedTasks) {
       taskList = taskList.map((task) => {
         task.isDone = false;

@@ -14,7 +14,13 @@ class ListItem extends React.Component {
       isEditTask: false,
     };
   }
-
+  // TODO  можно заменить одной функцией
+  /*
+  toogleMouseOver = () => {
+    const { hasMouseOver } = this.state;
+    this.setState({ hasMouseOver: !hasMouseOver });
+  }
+  */
   onMouseOver = () => {
     this.setState({
       hasMouseOver: true
