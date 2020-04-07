@@ -1,6 +1,6 @@
 import React from 'react';
 import TodoNotificationListItem from '../TodoNotificationListItem/TodoNotificationListItem.jsx';
-import './TodoNotificationList.css';
+import './style.css';
 
 class TodoNotificationList extends React.Component {
   constructor(props) {
@@ -89,7 +89,7 @@ class TodoNotificationList extends React.Component {
     let {list} = this.state;
 
     list = list.filter((item) => {
-      return item.shouldShow ? true : false;
+      return item.shouldShow;
     });
 
     return list.map((item) => {

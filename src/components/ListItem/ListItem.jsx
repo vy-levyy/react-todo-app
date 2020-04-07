@@ -2,10 +2,9 @@ import React from 'react';
 import ListItemStatusCheckbox from '../ListItemStatusCheckbox/ListItemStatusCheckbox.jsx';
 import ListItemTaskDescription from '../ListItemTaskDescription/ListItemTaskDescription.jsx';
 import ListItemDeleteButton from '../ListItemDeleteButton/ListItemDeleteButton.jsx';
-import './ListItem.css';
+import './style.css';
 
 class ListItem extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -14,23 +13,10 @@ class ListItem extends React.Component {
       isEditTask: false,
     };
   }
-  // TODO  можно заменить одной функцией
-  /*
+  
   toogleMouseOver = () => {
     const { hasMouseOver } = this.state;
     this.setState({ hasMouseOver: !hasMouseOver });
-  }
-  */
-  onMouseOver = () => {
-    this.setState({
-      hasMouseOver: true
-    });
-  }
-
-  onMouseOut = () => {
-    this.setState({
-      hasMouseOver: false
-    });
   }
 
   handleIsEditTaskChange = (isEditTask) => {
@@ -43,8 +29,8 @@ class ListItem extends React.Component {
     return (
       <li
         className={this.props.className + " list-item"}
-        onMouseOver={this.onMouseOver}
-        onMouseOut={this.onMouseOut}
+        onMouseOver={this.toogleMouseOver}
+        onMouseOut={this.toogleMouseOver}
       >
         <div className="col-1">
           <ListItemStatusCheckbox

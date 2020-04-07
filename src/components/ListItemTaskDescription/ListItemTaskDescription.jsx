@@ -1,5 +1,5 @@
 import React from 'react';
-import './ListItemTaskDescription.css';
+import './style.css';
 
 class ListItemTaskDescription extends React.Component {
   constructor(props) {
@@ -48,7 +48,8 @@ class ListItemTaskDescription extends React.Component {
     }
   }
 
-  render() {
+
+  getHtml() {
     const className = this.props.className + ' list-item-task-description';
 
     let tag = (
@@ -75,6 +76,11 @@ class ListItemTaskDescription extends React.Component {
     }
 
     return tag;
+  }
+
+  
+  render() {
+    return this.getHtml();
   }
 }
 

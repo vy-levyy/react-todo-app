@@ -1,28 +1,26 @@
 import React from 'react';
-import './ListStatusCheckbox.css';
+import './style.css';
 
-class ListStatusCheckbox extends React.Component {
-  handleChange = () => {
-    this.props.onChangeAllTaskMarksChange();
+function ListStatusCheckbox(props) {
+  const handleChange = () => {
+    props.onChangeAllTaskMarksChange();
   }
 
-  render() {
-    const labelClassName = (
-      'list-status-checkbox-label'
-      + (this.props.isChecked ? ' active-list-status-checkbox-label' : '')
-    );
+  const labelClassName = (
+    'list-status-checkbox-label'
+    + (props.isChecked ? ' active-list-status-checkbox-label' : '')
+  );
 
-    return (
-      <label className={labelClassName}>
-        <input
-          className="d-none"
-          type="checkbox"
-          checked={this.props.isChecked}
-          onChange={this.handleChange}
-        />
-      </label>
-    );
-  }
+  return (
+    <label className={labelClassName}>
+      <input
+        className="d-none"
+        type="checkbox"
+        checked={props.isChecked}
+        onChange={handleChange}
+      />
+    </label>
+  );
 }
 
 export default ListStatusCheckbox;

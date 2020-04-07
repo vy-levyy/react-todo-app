@@ -1,16 +1,14 @@
 import React from 'react';
-import './TodoNotificationListItem.css';
+import './style.css';
 
-class TodoNotification extends React.Component {
-  render() {
-    return (
-      <div className={this.props.className}>
-        <div className="col alert alert-success todo-notification-list-item">
-          {this.props.children}
-        </div>
+function TodoNotification(props) {
+  return (
+    <div className={props.className}>
+      <div className="col alert alert-success todo-notification-list-item">
+        {props.children}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default TodoNotification;

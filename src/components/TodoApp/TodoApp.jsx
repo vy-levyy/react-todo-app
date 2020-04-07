@@ -1,21 +1,11 @@
 import React from 'react';
-import Logo from '../Logo.jsx';
+import Logo from '../Logo/Logo.jsx';
 import TodoHeader from '../TodoHeader/TodoHeader.jsx';
-import List from '../List.jsx';
+import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
-import './TodoApp.css';
-
-// TODO можно вынести в отдельный файл и импортировать его в этот
-const successfullyNotificationMap = new Map([
-  [0, 'Task added successfully!'],
-  [1, 'Task removed successfully!'],
-  [2, 'Task mark changed successfully!'],
-  [3, 'Filter changed successfully!'],
-  [4, 'Completed tasks removed successfully!'],
-  [5, 'Task list mark changed successfully!'],
-  [6, 'Task description changed successfully!'],
-]);
+import './style.css';
+import successfullyNotificationMap from '../../successfullyNotificationMap';
 
 
 class TodoApp extends React.Component {
@@ -41,12 +31,16 @@ class TodoApp extends React.Component {
     const {taskList} = this.state;
 
     return taskList.filter((task) => {
-      // TODO лучше заменить на switch
-      if (filter === 'All') return true;
-      if (filter === 'Active' && !task.isDone) return true;
-      if (filter === 'Completed' && task.isDone) return true;
-
-      return false;
+      switch(filter) {
+        case 'All':
+          return true;
+        case 'Active':
+          return !task.isDone;
+        case 'Completed':
+          return task.isDone;
+        default:
+          return false;
+      }
     });
   }
 
@@ -152,8 +146,7 @@ class TodoApp extends React.Component {
     let {taskList} = this.state;
 
     taskList = taskList.filter((task) => {
-      //TODO !task.isDone даст тот же результат
-      return task.isDone ? false : true;
+      return !task.isDone;
     });
 
     this.setState({taskList});
@@ -164,22 +157,11 @@ class TodoApp extends React.Component {
   handleChangeAllTaskMarksChange = () => {
     let {taskList} = this.state;
     const {isAllCompletedTasks} = this.state;
-    // TODO если в isAllCompletedTasks булево значение , то можно сделать так:
-   /* taskList = taskList.map((task) => {
-      task.isDone = isAllCompletedTasks;
+
+    taskList = taskList.map((task) => {
+      task.isDone = !isAllCompletedTasks;
       return task;
-    }); */
-    if (isAllCompletedTasks) {
-      taskList = taskList.map((task) => {
-        task.isDone = false;
-        return task;
-      });
-    } else {
-      taskList = taskList.map((task) => {
-        task.isDone = true;
-        return task;
-      });
-    }
+    });
 
     this.setState({taskList});
     this.updateStates();
@@ -204,8 +186,7 @@ class TodoApp extends React.Component {
   }
 
 
-
-  render() {
+  getTodoFooter() {
     let todoFooter = '';
 
     if (!this.isEmptyTaskList()) {
@@ -223,6 +204,11 @@ class TodoApp extends React.Component {
       );
     }
 
+    return todoFooter;
+  }
+
+  
+  render() {
     return (
       <div className={this.props.className + " todo-app"}>
         <TodoNotificationList className="row">
@@ -245,7 +231,7 @@ class TodoApp extends React.Component {
               handleRemoveTaskChange={this.handleRemoveTaskChange}
               handleChangeTaskDescriptionChange={this.handleChangeTaskDescriptionChange}
             />
-            {todoFooter}
+            {this.getTodoFooter()}
           </div>
         </div>
       </div>

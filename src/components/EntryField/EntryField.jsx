@@ -1,29 +1,27 @@
 import React from 'react';
-import './EntryField.css';
+import './style.css';
 
-class EntryField extends React.Component {
-  handleKeyPress = (e) => {
+function EntryField(props) {
+  const handleKeyPress = (e) => {
     const {value} = e.target;
 
     if (e.key === 'Enter') {
       if (value.trim() !== '') {
-        this.props.onAddTaskChange(value);
+        props.onAddTaskChange(value);
         e.target.value = '';
       }
     }
   }
 
-  render() {
-    return (
-      <input
-        className={this.props.className + " entry-field"}
-        type="text"
-        placeholder="What needs to be done?"
-        onKeyPress={this.handleKeyPress}
-        autoFocus
-      />
-    );
-  }
+  return (
+    <input
+      className={props.className + " entry-field"}
+      type="text"
+      placeholder="What needs to be done?"
+      onKeyPress={handleKeyPress}
+      autoFocus
+    />
+  );
 }
 
 export default EntryField;
