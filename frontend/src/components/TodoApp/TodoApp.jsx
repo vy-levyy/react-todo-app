@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Logo from '../Logo/Logo.jsx';
 import TodoHeader from '../TodoHeader/TodoHeader.jsx';
 import List from '../List/List.jsx';
@@ -25,6 +26,23 @@ class TodoApp extends React.Component {
 
 
   static lastId = 0;
+
+  
+  async componentDidMount() {
+    const taskList = await this.getUserTaskList();
+    console.log(taskList[0]);
+  }
+
+  async getUserTaskList() {
+    const tempUserId = 1;
+
+    // host потом из .env возьму
+    const response = await axios.get('http://localhost:3001/task_list', {
+      tempUserId
+    });
+
+    return JSON.parse(response.request.response);
+  }
 
 
   getTaskList(filter) {
@@ -90,7 +108,22 @@ class TodoApp extends React.Component {
     this.setState({notificationStatus});
   }
 
+  async add() {
+    try {
+      const res = await axios.post('http://localhost:3001/create', {
+        task: 'task'
+      });
 
+    } catch(e) {
+      console.log(`Ошибочкос: ${e}`);
+    }
+    // try {
+    //   const response = await axios.get('http://localhost:3001/str');
+    //   console.log('Returned data: ', response);
+    // } catch(e) {
+    //   console.log(`Ошибочкос: ${e}`);
+    // }
+  }
 
   handleAddTaskChange = (description) => {
     const {taskList} = this.state;
@@ -106,6 +139,7 @@ class TodoApp extends React.Component {
     TodoApp.lastId += 1;
     this.updateStates();
     this.setNotificationStatus(successfullyNotificationMap.get(0));
+    this.add();
   }
 
   handleRemoveTaskChange = (id) => {
