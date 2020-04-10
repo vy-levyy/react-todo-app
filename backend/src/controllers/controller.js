@@ -1,6 +1,6 @@
-const addFunction = require('../models/model');
+const model = require('../models/model');
 
-exports.add = (req, res) => {
-  addFunction();
-  res.send('Successful');
+exports.getUserTaskList = (req, res) => {
+  const userId = req.query.tempUserId;
+  model.getUserTaskList(res, userId);
 }

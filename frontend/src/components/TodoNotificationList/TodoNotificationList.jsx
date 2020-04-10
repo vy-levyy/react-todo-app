@@ -22,9 +22,13 @@ class TodoNotificationList extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    this.addItem(newProps.children);
-    this.processList();
-    return true;
+    if (newProps.children !== '') {
+      this.addItem(newProps.children);
+      this.processList();
+      return true;
+    }
+    
+    return false;
   }
 
   componentWillUnmount() {
