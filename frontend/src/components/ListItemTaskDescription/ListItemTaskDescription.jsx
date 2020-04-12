@@ -38,8 +38,6 @@ class ListItemTaskDescription extends React.Component {
 
   handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.props.onChangeTaskDescriptionChange(this.props.task.id, e.target.value);
-
       e.target.blur();
       
       this.setState({

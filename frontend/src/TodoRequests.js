@@ -13,9 +13,10 @@ class TodoRequests {
         }
       });
 
-      return JSON.parse(response.request.response);
+      return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
+      return e;
     }
   }
 
@@ -29,7 +30,7 @@ class TodoRequests {
 
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 
@@ -45,7 +46,7 @@ class TodoRequests {
 
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 
@@ -60,7 +61,7 @@ class TodoRequests {
 
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 
@@ -76,7 +77,7 @@ class TodoRequests {
 
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 
@@ -84,13 +85,13 @@ class TodoRequests {
   static changeAllTaskMarks = async (userId, isDone) => {
     try {
       const response = axios.put(`${SERVER_HOST}/change_all_task_marks`, {
-        isDone,
-        userId
+        userId,
+        isDone
       });
     
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 
@@ -105,7 +106,7 @@ class TodoRequests {
 
       return response;
     } catch(e) {
-      console.log(`Error: ${e}`);
+      console.log(e);
     }
   }
 }

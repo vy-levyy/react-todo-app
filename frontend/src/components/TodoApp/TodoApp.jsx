@@ -30,20 +30,16 @@ class TodoApp extends React.Component {
 
 
   componentDidMount = async () => {
-    await this.updateStates();
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    
+    if (response.data !== undefined) {
+      this.updateState(response.data, null);
+    } else {
+      this.setState({
+        notificationStatus: response.toString()
+      });
+    }
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (JSON.stringify(this.state.taskList) === JSON.stringify(nextState.taskList)) {
-  //     if (this.state.itemsCounter === nextState.itemsCounter) {
-  //       if (this.state.filter === nextState.filter) {
-  //         return false;
-  //       }
-  //     }
-  //   }
-
-  //   return true;
-  // }
 
 
   getTaskList(filter) {
@@ -63,44 +59,64 @@ class TodoApp extends React.Component {
     });
   }
 
-  updateTaskList = async () => {
-    const taskList = await TodoRequests.getTaskList(this.state.userId);
-    this.setState({taskList});
-  }
+  getNextCounters(nextTaskList) {
+    let nextActiveItemsCounter = 0;
+    let nextCompletedItemsCounter = 0;
 
-  updateCounters() {
-    this.setState((state) => {
-      const {taskList} = state;
-      let activeItemsCounter = 0;
-      let completedItemsCounter = 0;
+    nextTaskList.map((task) => {
+      if (!task.isDone) nextActiveItemsCounter += 1;
+      if (task.isDone) nextCompletedItemsCounter += 1;
 
-      taskList.map((task) => {
-        if (!task.isDone) activeItemsCounter += 1;
-        if (task.isDone) completedItemsCounter += 1;
-
-        return task;
-      });
-
-      return {
-        activeItemsCounter,
-        completedItemsCounter,
-        itemsCounter: activeItemsCounter + completedItemsCounter,
-      };
+      return task;
     });
+
+    return {
+      nextActiveItemsCounter,
+      nextCompletedItemsCounter,
+      nextItemsCounter: nextActiveItemsCounter + nextCompletedItemsCounter,
+    };
   }
 
-  updateIsAllCompletedTasks() {
-    this.setState((state) => {
-      return {
-        isAllCompletedTasks: state.itemsCounter !== 0 && state.itemsCounter === state.completedItemsCounter
-      }
+  getNextIsAllCompletedTasks(nextItemsCounter, nextCompletedItemsCounter) {
+    return nextItemsCounter !== 0 && nextItemsCounter === nextCompletedItemsCounter;;
+  }
+
+  getNextState = (nextTaskList) => {
+    const {
+      nextItemsCounter,
+      nextActiveItemsCounter,
+      nextCompletedItemsCounter
+    } = this.getNextCounters(nextTaskList);
+
+    const nextIsAllCompletedTasks = 
+      this.getNextIsAllCompletedTasks(nextItemsCounter, nextCompletedItemsCounter);
+
+    return {
+      nextItemsCounter,
+      nextActiveItemsCounter,
+      nextCompletedItemsCounter,
+      nextIsAllCompletedTasks
+    }
+  }
+
+  updateState = (nextTaskList, nextNotificationStatus) => {
+    const nextState = this.getNextState(nextTaskList);
+
+    const {
+      nextItemsCounter,
+      nextActiveItemsCounter,
+      nextCompletedItemsCounter,
+      nextIsAllCompletedTasks
+    } = nextState;
+
+    this.setState({
+      taskList: nextTaskList,
+      itemsCounter: nextItemsCounter,
+      activeItemsCounter: nextActiveItemsCounter,
+      completedItemsCounter: nextCompletedItemsCounter,
+      isAllCompletedTasks: nextIsAllCompletedTasks,
+      notificationStatus: nextNotificationStatus
     });
-  }
-
-  updateStates = async () => {
-    await this.updateTaskList();
-    this.updateCounters();
-    this.updateIsAllCompletedTasks();
   }
 
   hasCompletedTasks() {
@@ -111,28 +127,29 @@ class TodoApp extends React.Component {
     return !Boolean(this.state.itemsCounter);
   }
 
-  setNotificationStatus(notificationStatus) {
-    this.setState({notificationStatus});
-    // this.setState(() => {
-    //   return {
-    //     notificationStatus: ''
-    //   }
-    // });
-  }
-
 
 
   handleAddTaskChange = async (taskDescription) => {
+    // const addTaskResponse = await TodoRequests.addTask(this.state.userId, taskDescription);
+    
+    // if (addTaskResponse.status >= 200 && addTaskResponse.status < 300) {
+    //   const getTaskListResponse = await TodoRequests.getTaskList(this.state.userId);
+
+    //   if (getTaskListResponse.status >= 200 && getTaskListResponse.status < 300) {
+        
+    //   }
+    // }
     await TodoRequests.addTask(this.state.userId, taskDescription);
-    await this.updateStates();
-    this.setNotificationStatus(successfullyNotificationMap.get(0));
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    this.updateState(response.data, successfullyNotificationMap.get(0));
   }
 
 
   handleRemoveTaskChange = async (taskId) => {
     await TodoRequests.removeTask(this.state.userId, taskId);
-    await this.updateStates();
-    this.setNotificationStatus(successfullyNotificationMap.get(1));
+    const response = await TodoRequests.getTaskList(this.state.userId);
+
+    this.updateState(response.data, successfullyNotificationMap.get(1));
   }
 
 
@@ -146,15 +163,18 @@ class TodoApp extends React.Component {
 
     if (isDone != null) {
       await TodoRequests.changeTaskMark(this.state.userId, taskId, isDone);
-      await this.updateStates();
-      this.setNotificationStatus(successfullyNotificationMap.get(2));
+      const response = await TodoRequests.getTaskList(this.state.userId);
+    
+      this.updateState(response.data, successfullyNotificationMap.get(2));
     }
   }
 
 
   handleChangeFilterChange = (filterStatus) => {
-    this.setState({filter: filterStatus});
-    this.setNotificationStatus(successfullyNotificationMap.get(3));
+    this.setState({
+      filter: filterStatus,
+      notificationStatus: successfullyNotificationMap.get(3)
+    });
   }
 
 
@@ -171,16 +191,18 @@ class TodoApp extends React.Component {
       taskIds.push(task.id);
     });
 
-    await TodoRequests.removeCompletedTasks( this.state.userId, taskIds);
-    await this.updateStates();
-    this.setNotificationStatus(successfullyNotificationMap.get(4));
+    await TodoRequests.removeCompletedTasks(this.state.userId, taskIds);
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    
+    this.updateState(response.data, successfullyNotificationMap.get(4));
   }
 
 
   handleChangeAllTaskMarksChange = async () => {
     await TodoRequests.changeAllTaskMarks(this.state.userId, !this.state.isAllCompletedTasks);
-    await this.updateStates();
-    this.setNotificationStatus(successfullyNotificationMap.get(5));
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    
+    this.updateState(response.data, successfullyNotificationMap.get(5));
   }
 
 
@@ -190,8 +212,10 @@ class TodoApp extends React.Component {
       taskId,
       taskDescription.trim()
     );
-    await this.updateTaskList();
-    this.setNotificationStatus(successfullyNotificationMap.get(6));
+
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    
+    this.updateState(response.data, successfullyNotificationMap.get(6));
   }
 
 

@@ -29,73 +29,104 @@ app.use((req, res, next) => {
 
 // app.use('/task_list', router);
 app.get('/task_list', (req, res) => {
-  connection.query(
-    `SELECT
+  const sql = `
+    SELECT
       task_id AS id,
       task_description AS description,
       done AS isDone
     FROM todo.tasks
-    WHERE user_id = ${req.query.userId}`,
-    (err, results) => {
-      if(err) return console.log(err);
-      res.send(results);
+    WHERE user_id = ${req.query.userId}
+  `;
+
+  connection.query(sql, (err, results) => {
+      if (err) {
+        return console.log(err);
+      }
+
+      if (results.length !== 0) {
+        res.send(results);
+      } else {
+        res.sendStatus(404);
+      }
     }
   );
 });
 
 
 app.post('/create_task', urlencodedParser, function(req, res) {
-  //if(!req.body) return res.sendStatus(400);
+  if (req.body.userId === undefined || req.body.taskDescription === undefined) {
+    return res.sendStatus(400);
+  }
 
-  connection.query(
-    `INSERT INTO todo.tasks (user_id, task_description, done)
-    VALUE (?, ?, false)`,
+  const sql = `
+    INSERT INTO todo.tasks (user_id, task_description, done)
+    VALUE (?, ?, false)
+  `;
+
+  connection.query( 
+    sql,
     [req.body.userId, req.body.taskDescription],
-    function(err, results) {
-      if(err) return console.log(err);
+    function (err, results) {
+      if (err) return console.log(err);
       res.send(results);
-  });
+    }
+  );
 });
 
 
 app.delete('/delete_task', function(req, res) {
+  if (req.query.userId === undefined || req.query.taskId === undefined) {
+    return res.sendStatus(400);
+  }
+
+  const sql = `
+    DELETE FROM todo.tasks
+    WHERE user_id = ${req.query.userId} AND task_id = ${req.query.taskId}
+  `;
+
   connection.query(
-    `DELETE FROM todo.tasks
-    WHERE user_id = ${req.query.userId} AND task_id = ${req.query.taskId}`,
-    function(err, results) {
-      if(err) return console.log(err);
+    sql,
+    function (err, results) {
+      if (err) return console.log(err);
       res.send(results);
-  });
+    }
+  );
 });
 
 
 app.put('/change_task_mark', urlencodedParser, function(req, res) {
+  //if (!req.body) return res.sendStatus(400);
+
   connection.query(
     `UPDATE todo.tasks SET done = ${req.body.isDone}
     WHERE user_id = ${req.body.userId} and task_id = ${req.body.taskId}`,
     function(err, results) {
-      if(err) return console.log(err);
+      if (err) return console.log(err);
       res.send(results);
   });
 });
 
 
 app.delete('/delete_completed_tasks', function(req, res) {
+  //if (!req.query) return res.sendStatus(400);
+
   connection.query(
     `DELETE from todo.tasks
     WHERE user_id = ${req.query.userId} AND task_id in (${req.query.taskIds.join(', ')})`,
-    function(err, results) {
-      if(err) return console.log(err);
+    function (err, results) {
+      if (err) return console.log(err);
       res.send(results);
   });
 });
 
 
 app.put('/change_all_task_marks', urlencodedParser, function(req, res) {
+  //if(!req.body) return res.sendStatus(400);
+
   connection.query(
     `UPDATE todo.tasks SET done = ${req.body.isDone}
     WHERE user_id = ${req.body.userId}`,
-    function(err, results) {
+    function (err, results) {
       if(err) return console.log(err);
       res.send(results);
   });
@@ -103,17 +134,13 @@ app.put('/change_all_task_marks', urlencodedParser, function(req, res) {
 
 
 app.put('/change_task_description', urlencodedParser, function(req, res) {
-  console.log(req.body.taskDescription);
-  console.log(req.body.userId);
-  console.log(req.body.taskId);
+  //if (!req.body) return res.sendStatus(400);
+
   connection.query(
-    `UPDATE todo.tasks SET task_description = ${req.body.taskDescription}
+    `UPDATE todo.tasks SET task_description = '${req.body.taskDescription}'
     WHERE user_id = ${req.body.userId} AND task_id = ${req.body.taskId}`,
-    function(err, results) {
-      if(err) {
-        console.log('///////////////////');
-        return console.log(err);
-      }
+    function (err, results) {
+      if (err) return console.log(err);
       res.send(results);
   });
 });
@@ -129,6 +156,8 @@ connection.connect(function(err){
   }
 });
 
-app.listen(process.env.PORT, function(){
+app.set('port', process.env.PORT || 3000);
+
+app.listen(app.get('port'), () => {
   console.log("Сервер ожидает подключения...");
 });
