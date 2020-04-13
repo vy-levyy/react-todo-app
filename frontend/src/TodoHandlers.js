@@ -6,7 +6,7 @@ class TodoHandlers {
   static async handleAddTaskChange (taskDescription) {
     const response = await TodoRequests.addTask(this.state.userId, taskDescription);
 
-    if (response.data !== undefined) {
+    if (response.status === 200) {
       this.setState({
         notificationStatus: successfullyNotificationMap.get(0)
       });
@@ -23,7 +23,7 @@ class TodoHandlers {
   static async handleRemoveTaskChange (taskId) {
     const response = await TodoRequests.removeTask(this.state.userId, taskId);
 
-    if (response.data !== undefined) {
+    if (response.status === 200) {
       this.setState({
         notificationStatus: successfullyNotificationMap.get(1)
       });
@@ -49,7 +49,7 @@ class TodoHandlers {
     if (isDone != null) {
       const response = await TodoRequests.changeTaskMark(this.state.userId, taskId, isDone);
 
-      if (response.data !== undefined) {
+      if (response.status === 200) {
         this.setState({
           notificationStatus: successfullyNotificationMap.get(2)
         });
@@ -88,7 +88,7 @@ class TodoHandlers {
 
     const response = await TodoRequests.removeCompletedTasks(this.state.userId, taskIds);
 
-    if (response.data !== undefined) {
+    if (response.status === 200) {
       this.setState({
         notificationStatus: successfullyNotificationMap.get(4)
       });
@@ -108,7 +108,7 @@ class TodoHandlers {
       !this.state.isAllCompletedTasks
     );
 
-    if (response.data !== undefined) {
+    if (response.status === 200) {
       this.setState({
         notificationStatus: successfullyNotificationMap.get(5)
       });
@@ -129,7 +129,7 @@ class TodoHandlers {
       taskDescription.trim()
     );
 
-    if (response.data !== undefined) {
+    if (response.status === 200) {
       this.setState({
         notificationStatus: successfullyNotificationMap.get(6)
       });

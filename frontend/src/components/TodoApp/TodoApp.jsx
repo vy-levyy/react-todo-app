@@ -4,9 +4,11 @@ import TodoHeader from '../TodoHeader/TodoHeader.jsx';
 import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
-import './style.css';
+
 import TodoHandlers from '../../TodoHandlers';
 import TodoRequests from '../../TodoRequests';
+
+import './style.css';
 
 
 
@@ -70,7 +72,7 @@ class TodoApp extends React.Component {
     const response = await TodoRequests.getTaskList(this.state.userId);
     const nextTaskList = response.data;
 
-    if (nextTaskList !== undefined) {
+    if (response.status === 200) {
       this.updateStateOn(nextTaskList);
     } else {
       this.setState({

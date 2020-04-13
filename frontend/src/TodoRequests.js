@@ -1,5 +1,5 @@
 import axios from 'axios';
-require('dotenv').config();
+// require('dotenv').config();
 
 // process.env пока что не работает
 const SERVER_HOST = 'http://localhost:3001';
