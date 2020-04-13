@@ -68,6 +68,7 @@ class ListItemTaskDescription extends React.Component {
           onBlur={this.handleBlur}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
+          maxLength="255"
           autoFocus
         />
       );

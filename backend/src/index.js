@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const Joi = require('@hapi/joi');
+const joiSchemas = require('./joiSchemas');
 // const router = require('./routes/router.js');
 // const controller = require('./controllers/controller');
   
@@ -29,10 +30,10 @@ app.use((req, res, next) => {
 });
 
 
+
 // app.use('/task_list', router);
 app.get('/task_list', (req, res) => {
-  const schema = Joi.number().integer().min(1).required();
-  const { error, value } = schema.validate(req.query.userId);
+  const { error, value } = joiSchemas.userId.validate(req.query.userId);
 
   if (error) {
     console.log(error.details[0].message);
@@ -64,8 +65,8 @@ app.get('/task_list', (req, res) => {
 
 app.post('/create_task', urlencodedParser, (req, res) => {
   const schema = Joi.object({
-    userId: Joi.number().integer().min(1).required(),
-    taskDescription: Joi.string().min(1).max(255).required()
+    userId: joiSchemas.userId,
+    taskDescription: joiSchemas.taskDescription
   });
   const { error, value } = schema.validate(req.body);
 
@@ -91,8 +92,8 @@ app.post('/create_task', urlencodedParser, (req, res) => {
 
 app.delete('/delete_task', (req, res) => {
   const schema = Joi.object({
-    userId: Joi.number().integer().min(1).required(),
-    taskId: Joi.number().integer().min(0).required()
+    userId: joiSchemas.userId,
+    taskId: joiSchemas.taskId
   });
   const {error, value} = schema.validate(req.query);
 
@@ -114,17 +115,22 @@ app.delete('/delete_task', (req, res) => {
 
 
 app.put('/change_task_mark', urlencodedParser, (req, res) => {
-  if (
-    req.body.userId === undefined 
-    || req.body.taskId === undefined 
-    || req.body.isDone === undefined
-  ) {
-    return res.sendStatus(400);
+  const schema = Joi.object({
+    userId: joiSchemas.userId,
+    taskId: joiSchemas.taskId,
+    isDone: joiSchemas.isDone
+  });
+
+  const {error, value} = schema.validate(req.body);
+
+  if (error) {
+    console.log(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
   const sql = `
-    UPDATE todo.tasks SET done = ${req.body.isDone}
-    WHERE user_id = ${req.body.userId} and task_id = ${req.body.taskId}
+    UPDATE todo.tasks SET done = ${value.isDone}
+    WHERE user_id = ${value.userId} and task_id = ${value.taskId}
   `;
 
   connection.query(sql, (err, results) => {
@@ -135,17 +141,20 @@ app.put('/change_task_mark', urlencodedParser, (req, res) => {
 
 
 app.delete('/delete_completed_tasks', (req, res) => {
-  // if (
-  //   req.query.userId === undefined
-  //   || req.query.taskIds === undefined
-  //   || typeof(req.query.taskIds) !== Array
-  // ) {
-  //   return res.sendStatus(400);
-  // }
+  const schema = Joi.object({
+    userId: joiSchemas.userId,
+    taskIds: joiSchemas.taskIds
+  });
+  const {error, value} = schema.validate(req.query);
+
+  if (error) {
+    console.log(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
+  }
 
   const sql = `
     DELETE from todo.tasks
-    WHERE user_id = ${req.query.userId} AND task_id in (${req.query.taskIds.join(', ')})
+    WHERE user_id = ${value.userId} AND task_id in (${value.taskIds.join(', ')})
   `;
 
   connection.query(sql, (err, results) => {
@@ -156,13 +165,20 @@ app.delete('/delete_completed_tasks', (req, res) => {
 
 
 app.put('/change_all_task_marks', urlencodedParser, (req, res) => {
-  if (req.body.userId || req.body.isDone) {
-    return res.sendStatus(400);
+  const schema = Joi.object({
+    userId: joiSchemas.userId,
+    isDone: joiSchemas.isDone
+  });
+  const {error, value} = schema.validate(req.body);
+
+  if (error) {
+    console.log(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
   const sql = `
-    UPDATE todo.tasks SET done = ${req.body.isDone}
-    WHERE user_id = ${req.body.userId}
+    UPDATE todo.tasks SET done = ${value.isDone}
+    WHERE user_id = ${value.userId}
   `;
 
   connection.query(sql, (err, results) => {
@@ -173,11 +189,21 @@ app.put('/change_all_task_marks', urlencodedParser, (req, res) => {
 
 
 app.put('/change_task_description', urlencodedParser, (req, res) => {
-  if (!req.body) return res.sendStatus(400);
+  const schema = Joi.object({
+    userId: joiSchemas.userId,
+    taskId: joiSchemas.taskId,
+    taskDescription: joiSchemas.taskDescription
+  });
+  const {error, value} = schema.validate(req.body);
+
+  if (error) {
+    console.log(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
+  }
 
   const sql = `
-    UPDATE todo.tasks SET task_description = '${req.body.taskDescription}'
-    WHERE user_id = ${req.body.userId} AND task_id = ${req.body.taskId}
+    UPDATE todo.tasks SET task_description = '${value.taskDescription}'
+    WHERE user_id = ${value.userId} AND task_id = ${value.taskId}
   `;
 
   connection.query(sql, (err, results) => {

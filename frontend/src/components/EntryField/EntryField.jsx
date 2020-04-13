@@ -19,6 +19,7 @@ function EntryField(props) {
       type="text"
       placeholder="What needs to be done?"
       onKeyPress={handleKeyPress}
+      maxLength="255"
       autoFocus
     />
   );
