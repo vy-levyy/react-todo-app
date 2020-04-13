@@ -14,9 +14,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
-      return e;
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -29,8 +29,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -45,8 +46,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -60,8 +62,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -76,8 +79,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -90,8 +94,9 @@ class TodoRequests {
       });
     
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 
@@ -105,8 +110,9 @@ class TodoRequests {
       });
 
       return response;
-    } catch(e) {
-      console.log(e);
+    } catch(error) {
+      console.log(error);
+      return error;
     }
   }
 }

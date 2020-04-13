@@ -139,9 +139,16 @@ class TodoApp extends React.Component {
         
     //   }
     // }
-    await TodoRequests.addTask(this.state.userId, taskDescription);
-    const response = await TodoRequests.getTaskList(this.state.userId);
-    this.updateState(response.data, successfullyNotificationMap.get(0));
+    const addTaskResponse = await TodoRequests.addTask(this.state.userId, taskDescription);
+
+    if (addTaskResponse.data !== undefined) {
+      const response = await TodoRequests.getTaskList(this.state.userId);
+      this.updateState(response.data, successfullyNotificationMap.get(0));
+    } else {
+      this.setState({
+        notificationStatus: addTaskResponse.toString()
+      });
+    }
   }
 
 
