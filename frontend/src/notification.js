@@ -8,4 +8,20 @@ const successfullyNotificationMap = new Map([
   [6, 'Task description changed successfully!'],
 ]);
 
-export default successfullyNotificationMap;
+const notification = {
+  success(descriptionNumber) {
+    return {
+      description: successfullyNotificationMap.get(descriptionNumber),
+      status: 'success'
+    }
+  },
+
+  error(description) {
+    return {
+      description,
+      status: 'danger'
+    }
+  }
+}
+
+export default notification;

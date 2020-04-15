@@ -4,12 +4,9 @@ import TodoHeader from '../TodoHeader/TodoHeader.jsx';
 import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
-
-import TodoHandlers from '../../TodoHandlers';
-import TodoRequests from '../../TodoRequests';
-
+import TodoHandlers from '../../controller/TodoHandlers';
+import TodoRequests from '../../controller/TodoRequests';
 import './style.css';
-
 
 
 class TodoApp extends React.Component {
@@ -23,21 +20,17 @@ class TodoApp extends React.Component {
       completedItemsCounter: 0,
       isAllCompletedTasks: false,
       filter: 'All',
-      notificationStatus: '',
+      notification: null,
 
       // temp
       userId: 1
     };
   }
 
-
-
   componentDidMount = () => {
     this.updateTaskList();
   }
 
-
-  
   handleAddTaskChange = (taskDescription) => {
     TodoHandlers.handleAddTaskChange.call(this, taskDescription);
   }
@@ -66,23 +59,12 @@ class TodoApp extends React.Component {
     TodoHandlers.handleChangeTaskDescriptionChange.call(this, taskId, taskDescription);
   }
 
-
-
   updateTaskList = async () => {
-    const response = await TodoRequests.getTaskList(this.state.userId);
-    const nextTaskList = response.data;
-
-    if (response.status === 200) {
-      this.updateStateOn(nextTaskList);
-    } else {
-      this.setState({
-        // пока не реализована овторизация и деление на других юзеров
-        // ошибка Not Found не передается
-        notificationStatus: null
-      });
-
-      this.updateStateOn([]);
-    }
+    TodoHandlers.handleResponse.call(
+      this,
+      await TodoRequests.getTaskList(this.state.userId), 
+      0
+    );
   }
   
   updateStateOn = (nextTaskList) => {
@@ -101,7 +83,7 @@ class TodoApp extends React.Component {
       activeItemsCounter: nextActiveItemsCounter,
       completedItemsCounter: nextCompletedItemsCounter,
       isAllCompletedTasks: nextIsAllCompletedTasks,
-      notificationStatus: null
+      notification: null
     });
   }
   
@@ -144,8 +126,6 @@ class TodoApp extends React.Component {
   getNextIsAllCompletedTasksOn (nextItemsCounter, nextCompletedItemsCounter) {
     return nextItemsCounter !== 0 && nextItemsCounter === nextCompletedItemsCounter;;
   }
-
-
   
   getTaskList(filter) {
     const {taskList} = this.state;
@@ -193,13 +173,11 @@ class TodoApp extends React.Component {
     return todoFooter;
   }
 
-
-
   render() {
     return (
       <div className={this.props.className + " todo-app"}>
         <TodoNotificationList className="row">
-          {this.state.notificationStatus}
+          {this.state.notification}
         </TodoNotificationList>
         <Logo className="row"/>
         <div className="row todo-wrap">

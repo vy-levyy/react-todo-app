@@ -1,15 +1,4 @@
-const mysql = require('mysql2');
-
-
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  database: process.env.DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
-}).promise();
-
-
+const connection = require('./mysqlConnection');
 
 exports.task_list = (userId) => {
   return connection.query(`
@@ -18,56 +7,48 @@ exports.task_list = (userId) => {
       task_description AS description,
       done AS isDone
     FROM todo.tasks
-    WHERE user_id = ${userId}
-  `);
+    WHERE user_id = ?
+  `, [userId]);
 };
 
-
 exports.create_task = (userId, taskDescription) => {
-  const sql = `
+  return connection.query(`
     INSERT INTO todo.tasks (user_id, task_description, done)
     VALUE (?, ?, false)
-  `;
-
-  return connection.query(sql, [userId, taskDescription]);
+  `, [userId, taskDescription]);
 }
-
 
 exports.delete_task = (userId, taskId) => {
   return connection.query(`
     DELETE FROM todo.tasks
-    WHERE user_id = ${userId} AND task_id = ${taskId}
-  `);
+    WHERE user_id = ? AND task_id = ?
+  `,[userId, taskId]);
 }
-
 
 exports.change_task_mark = (userId, taskId, isDone) => {
   return connection.query(`
-    UPDATE todo.tasks SET done = ${isDone}
-    WHERE user_id = ${userId} and task_id = ${taskId}
-  `);
+    UPDATE todo.tasks SET done = ?
+    WHERE user_id = ? and task_id = ?
+  `, [isDone, userId, taskId]);
 }
-
 
 exports.delete_completed_tasks = (userId, taskIds) => {
   return connection.query(`
     DELETE from todo.tasks
-    WHERE user_id = ${userId} AND task_id in (${taskIds.join(', ')})
-  `);
+    WHERE user_id = ? AND task_id in (?)
+  `, [userId, taskIds]);
 }
-
 
 exports.change_all_task_marks = (userId, isDone) => {
   return connection.query(`
-    UPDATE todo.tasks SET done = ${isDone}
-    WHERE user_id = ${userId}
-  `);
+    UPDATE todo.tasks SET done = ?
+    WHERE user_id = ?
+  `,[isDone, userId]);
 }
-
 
 exports.change_task_description = (userId, taskId, taskDescription) => {
   return connection.query(`
-    UPDATE todo.tasks SET task_description = '${taskDescription}'
-    WHERE user_id = ${userId} AND task_id = ${taskId}
-  `);
+    UPDATE todo.tasks SET task_description = ?
+    WHERE user_id = ? AND task_id = ?
+  `, [taskDescription, userId, taskId]);
 }

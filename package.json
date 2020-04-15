@@ -1,10 +1,12 @@
 {
-  "name": "backend",
+  "name": "todo",
   "version": "1.0.0",
-  "description": "",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "start-backend": "cd backend && npm run dev",
+    "start-frontend": "cd frontend && npm start",
+    "start": "concurrently --kill-others \"npm run start-backend\" \"npm run start-frontend\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,12 +19,7 @@
     "url": "https://github.com/Volllon/react-todo-app/issues"
   },
   "homepage": "https://github.com/Volllon/react-todo-app#readme",
-  "dependencies": {
-    "@hapi/joi": "^17.1.1",
-    "body-parser": "^1.19.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "hbs": "^4.1.1",
-    "mysql2": "^2.1.0"
+  "devDependencies": {
+    "concurrently": "^5.1.0"
   }
 }

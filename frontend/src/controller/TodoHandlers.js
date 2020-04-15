@@ -1,41 +1,18 @@
 import TodoRequests from './TodoRequests';
-import successfullyNotificationMap from './successfullyNotificationMap';
-
+import notification from '../notification';
 
 class TodoHandlers {
   static async handleAddTaskChange (taskDescription) {
     const response = await TodoRequests.addTask(this.state.userId, taskDescription);
-
-    if (response.status === 200) {
-      this.setState({
-        notificationStatus: successfullyNotificationMap.get(0)
-      });
-
-      this.updateTaskList();
-    } else {
-      this.setState({
-        notificationStatus: response.toString()
-      });
-    }
+    
+    TodoHandlers.handleResponse.call(this, response, 0);
   }
-
 
   static async handleRemoveTaskChange (taskId) {
     const response = await TodoRequests.removeTask(this.state.userId, taskId);
 
-    if (response.status === 200) {
-      this.setState({
-        notificationStatus: successfullyNotificationMap.get(1)
-      });
-
-      this.updateTaskList();
-    } else {
-      this.setState({
-        notificationStatus: response.toString()
-      });
-    }
+    TodoHandlers.handleResponse.call(this, response, 1);
   }
-
 
   static async handleChangeTaskMarkChange (taskId) {
     let {taskList} = this.state;
@@ -49,28 +26,16 @@ class TodoHandlers {
     if (isDone != null) {
       const response = await TodoRequests.changeTaskMark(this.state.userId, taskId, isDone);
 
-      if (response.status === 200) {
-        this.setState({
-          notificationStatus: successfullyNotificationMap.get(2)
-        });
-
-        this.updateTaskList();
-      } else {
-        this.setState({
-          notificationStatus: response.toString()
-        });
-      }
+      TodoHandlers.handleResponse.call(this, response, 2);
     }
   }
-
 
   static async handleChangeFilterChange (filterStatus) {
     this.setState({
       filter: filterStatus,
-      notificationStatus: successfullyNotificationMap.get(3)
+      notification: notification.success(3)
     });
   }
-
 
   static async handleRemoveCompletedTasksChange () {
     let {taskList} = this.state;
@@ -85,22 +50,10 @@ class TodoHandlers {
       taskIds.push(task.id);
     });
 
-
     const response = await TodoRequests.removeCompletedTasks(this.state.userId, taskIds);
 
-    if (response.status === 200) {
-      this.setState({
-        notificationStatus: successfullyNotificationMap.get(4)
-      });
-
-      this.updateTaskList();
-    } else {
-      this.setState({
-        notificationStatus: response.toString()
-      });
-    }
+    TodoHandlers.handleResponse.call(this, response, 4);
   }
-
 
   static async handleChangeAllTaskMarksChange () {
     const response = await TodoRequests.changeAllTaskMarks(
@@ -108,19 +61,8 @@ class TodoHandlers {
       !this.state.isAllCompletedTasks
     );
 
-    if (response.status === 200) {
-      this.setState({
-        notificationStatus: successfullyNotificationMap.get(5)
-      });
-
-      this.updateTaskList();
-    } else {
-      this.setState({
-        notificationStatus: response.toString()
-      });
-    }
+    TodoHandlers.handleResponse.call(this, response, 5);
   }
-
 
   static async handleChangeTaskDescriptionChange (taskId, taskDescription) {
     const response = await TodoRequests.changeTaskDescription(
@@ -129,19 +71,26 @@ class TodoHandlers {
       taskDescription.trim()
     );
 
-    if (response.status === 200) {
-      this.setState({
-        notificationStatus: successfullyNotificationMap.get(6)
-      });
+    TodoHandlers.handleResponse.call(this, response, 6);
+  }
 
-      this.updateTaskList();
+  static handleResponse(response, successNotificationNumber) {
+    if (response.status === 200) {
+      if (response.config.method === 'get') {
+        this.updateStateOn(response.data);
+      } else {
+        this.setState({
+          notification: notification.success(successNotificationNumber)
+        });
+
+        this.updateTaskList();
+      }
     } else {
       this.setState({
-        notificationStatus: response.toString()
+        notification: notification.error(response)
       });
     }
   }
 }
-
 
 export default TodoHandlers;

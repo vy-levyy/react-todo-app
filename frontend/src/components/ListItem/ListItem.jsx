@@ -13,7 +13,7 @@ class ListItem extends React.Component {
       isEditTask: false,
     };
   }
-  
+
   toogleMouseOver = () => {
     const { hasMouseOver } = this.state;
     this.setState({ hasMouseOver: !hasMouseOver });

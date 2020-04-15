@@ -10,11 +10,9 @@ class TodoNotificationList extends React.Component {
       list: [],
     }
   }
-
   
   static lastId = 0;
   static timerIds = [];
-
 
   componentDidMount() {
     window.addEventListener("resize", this.processList.bind(this));
@@ -37,15 +35,17 @@ class TodoNotificationList extends React.Component {
 
 
   addItem(item) {
+    //console.log(item)
     let {list} = this.state;
 
     list.unshift({
       html: (
         <TodoNotificationListItem
           className="row"
+          status={item.status}
           key={TodoNotificationList.lastId}
         >
-          {item}
+          {item.description}
         </TodoNotificationListItem>
       ),
       shouldShow: true
@@ -92,15 +92,10 @@ class TodoNotificationList extends React.Component {
   getList() {
     let {list} = this.state;
 
-    list = list.filter((item) => {
-      return item.shouldShow;
-    });
-
     return list.map((item) => {
-      return item.html;
+      return item.shouldShow ? item.html : null;
     });
   }
-
 
   render() {
     return (

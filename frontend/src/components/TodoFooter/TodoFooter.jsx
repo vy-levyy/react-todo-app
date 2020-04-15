@@ -6,7 +6,7 @@ import './style.css';
 
 function TodoFooter(props) {
   let clearCompletedItemsButton = <div className="col-3" />;
-  
+
   if (props.shouldShowClearCompletedItemsButton) {
     clearCompletedItemsButton = (
       <div className="col-12 col-sm-3 clear-completed-items-button-wrap text-center">
@@ -16,7 +16,7 @@ function TodoFooter(props) {
       </div>
     );
   }
-  
+
   return (
     <div className={props.className + " todo-footer"}>
       <div className="col">

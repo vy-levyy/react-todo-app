@@ -3,27 +3,29 @@ const Joi = require('@hapi/joi');
 const joiSchemas = require('../joiSchemas');
 
 
+function handleModel(res, modelPromise, isGetMethod = false) {
+  modelPromise
+    .then((result) => {
+      res.status(200).send(isGetMethod ? result[0] : result);
+    })
+    .catch((error) => {
+      res.send({message: error.details[0].message});
+  });
+}
+
+function handleValidationError(res, error, functionName) {
+  return res.status(400).send({
+    message: error.details[0].message,
+    function: functionName
+  });
+}
+
 exports.task_list = (req, res) => {
   const { error, value } = joiSchemas.userId.validate(req.query.userId);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.task_list(value)
-    .then(([rows]) => {
-      if (rows.length !== 0) {
-        res.send(rows);
-      } else {
-        res.sendStatus(404);
-      }
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'task list');
+  else handleModel(res, model.task_list(value), req.route.methods.get);
 }
-
 
 exports.create_task = (req, res) => {
   const schema = Joi.object({
@@ -32,18 +34,8 @@ exports.create_task = (req, res) => {
   });
   const { error, value } = schema.validate(req.body);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.create_task(value.userId, value.taskDescription)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'create task');
+  else handleModel(res, model.create_task(value.userId, value.taskDescription));
 }
 
 exports.delete_task = (req, res) => {
@@ -53,20 +45,9 @@ exports.delete_task = (req, res) => {
   });
   const {error, value} = schema.validate(req.query);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.delete_task(value.userId, value.taskId)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'delete task');
+  else handleModel(res, model.delete_task(value.userId, value.taskId));
 }
-
 
 exports.change_task_mark = (req, res) => {
   const schema = Joi.object({
@@ -77,20 +58,9 @@ exports.change_task_mark = (req, res) => {
 
   const {error, value} = schema.validate(req.body);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.change_task_mark(value.userId, value.taskId, value.isDone)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'change task mark');
+  else handleModel(res, model.change_task_mark(value.userId, value.taskId, value.isDone));
 }
-
 
 exports.delete_completed_tasks = (req, res) => {
   const schema = Joi.object({
@@ -99,20 +69,9 @@ exports.delete_completed_tasks = (req, res) => {
   });
   const {error, value} = schema.validate(req.query);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.delete_completed_tasks(value.userId, value.taskIds)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'delete completed tasks');
+  else handleModel(res, model.delete_completed_tasks(value.userId, value.taskIds));
 }
-
 
 exports.change_all_task_marks = (req, res) => {
   const schema = Joi.object({
@@ -121,20 +80,9 @@ exports.change_all_task_marks = (req, res) => {
   });
   const {error, value} = schema.validate(req.body);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.change_all_task_marks(value.userId, value.isDone)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'change all task marks');
+  else handleModel(res, model.change_all_task_marks(value.userId, value.isDone));
 }
-
 
 exports.change_task_description = (req, res) => {
   const schema = Joi.object({
@@ -144,16 +92,10 @@ exports.change_task_description = (req, res) => {
   });
   const {error, value} = schema.validate(req.body);
 
-  if (error) {
-    console.log(error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
-
-  model.change_task_description(value.userId, value.taskId, value.taskDescription)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      return console.log(err);
-    });
+  if (error) handleValidationError(res, error, 'change task description');
+  else handleModel(res, model.change_task_description(
+    value.userId,
+    value.taskId,
+    value.taskDescription
+  ));
 }

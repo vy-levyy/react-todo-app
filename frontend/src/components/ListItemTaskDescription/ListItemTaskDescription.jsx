@@ -46,7 +46,6 @@ class ListItemTaskDescription extends React.Component {
     }
   }
 
-
   getHtml() {
     const className = this.props.className + ' list-item-task-description';
 
@@ -76,7 +75,6 @@ class ListItemTaskDescription extends React.Component {
 
     return tag;
   }
-
   
   render() {
     return this.getHtml();
