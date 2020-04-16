@@ -1,10 +1,25 @@
 import React from 'react';
-import TodoApp from './components/TodoApp/TodoApp.jsx';
-//import LoginForm from './components/LoginForm/LoginForm.jsx';
+import {BrowserRouter as Router,  Switch, Route} from "react-router-dom";
+import Home from './components/pages/Home/Home.jsx';
+import Authorization from './components/pages/Authorization/Authorization.jsx';
+import Registration from './components/pages/Registration/Registration.jsx';
 
 function App() {
-  return <TodoApp className="container"/>;
-  //return <LoginForm className="container"/>;
+  return (
+    <Router>
+      <Switch>
+        <Route path="/authorization">
+          <Authorization />
+        </Route>
+        <Route path="/registration">
+          <Registration />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
+  );
 }
 
 export default App;
