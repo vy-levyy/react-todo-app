@@ -16,7 +16,7 @@ Download project. Run your code editor and open project folder
 
 Enter the following command in the terminal of the code editor:
 ```
-npm install
+npm run install-all
 ```
 ### Creating configs
 
