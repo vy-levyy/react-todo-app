@@ -1,5 +1,8 @@
 import React from 'react';
-import yupSchemasMap from './yupSchemasMap';
+import AppInput from '../common/AppInput/AppInput.jsx';
+import Tooltip from '../common/Tooltip/Tooltip.jsx';
+import validationSchemasMap from './validationSchemasMap';
+import tooltipMaps from './tooltipMaps';
 import './style.sass';
 import { Link } from "react-router-dom";
 
@@ -32,11 +35,14 @@ class LoginForm extends React.Component {
     inputField.value = event.target.value;
 
     if (inputFieldName !== 'confirmedPassword') {
-      const schema = yupSchemasMap.get(inputFieldName);
+      const schema = validationSchemasMap.get(inputFieldName);
       inputField.isValid = await schema.isValid(inputField.value);
 
-      if (inputFieldName === 'password' && this.state.confirmedPassword.value !== '')
-        this.state.confirmedPassword.isValid = this.isPasswordsMatch();
+      if (inputFieldName === 'password' && this.state.confirmedPassword.value !== '') {
+        const isPasswordsMatch = this.isPasswordsMatch();
+        this.state.confirmedPassword.isValid = isPasswordsMatch;
+        this.state.confirmedPassword.shouldShowTooltip = !isPasswordsMatch;
+      }
     } else {
       if (this.state.password.value !== '')
         inputField.isValid = this.isPasswordsMatch();
@@ -53,18 +59,17 @@ class LoginForm extends React.Component {
   handleFocus = (event) => {
     const inputFieldName = event.target.id;
     const inputField = this.state[inputFieldName];
-    const truthMap = new Map([
-      ['focus', true],
-      ['blur', false]
-    ]);
 
-    if (!inputField.isValid) {
-      inputField.shouldShowTooltip = truthMap.get(event.type);
-
-      this.setState({
-        [inputFieldName]: inputField
-      });
+    if ((event.type === 'blur' && this.isEmptyInput(inputFieldName)) || inputField.isValid) {
+      inputField.shouldShowTooltip = false;
+    } else {
+      inputField.tooltip = tooltipMaps[inputFieldName].get(event.type)
+      inputField.shouldShowTooltip = true;
     }
+
+    this.setState({
+      [inputFieldName]: inputField
+    });
   }
 
   handleSubmit(event) {
@@ -91,28 +96,30 @@ class LoginForm extends React.Component {
     return this.state.mode === 'authorization';
   }
 
+  isValidInput(inputFieldName) {
+    return this.state[inputFieldName].isValid;
+  }
+
+  isEmptyInput(inputFieldName) {
+    return this.state[inputFieldName].value === '';
+  }
+
   getComnfirmedPasswordElement() {
     if (this.isAuthorizationMode()) {
       return null;
     } else {
       return (
         <ElementWrap>
-          <input
-            id='confirmedPassword'
+          <AppInput
+            id="confirmedPassword"
             type="password"
-            className="form-control"
             placeholder="confirm password"
-            onChange={this.handleInputChange}
-            onFocus={this.handleFocus}
-            onBlur={this.handleFocus}
             maxLength="25"
-            success={this.state.confirmedPassword.isValid.toString()}
+            context={this}
           />
-          <div className="login-form-tooltip-container">
-            <Tooltip show={this.state.confirmedPassword.shouldShowTooltip}>
-              {this.state.confirmedPassword.tooltip}
-            </Tooltip>
-          </div>
+          <Tooltip show={this.state.confirmedPassword.shouldShowTooltip}>
+            {this.state.confirmedPassword.tooltip}
+          </Tooltip>
         </ElementWrap>
       );
     }
@@ -143,40 +150,28 @@ class LoginForm extends React.Component {
         <div className="row">
           <div className="col">
             <ElementWrap>
-              <input
-                id='email'
-                type="text"
-                className="form-control"
+              <AppInput
+                id="email"
+                type="email"
                 placeholder="email"
-                onChange={this.handleInputChange}
-                onFocus={this.handleFocus}
-                onBlur={this.handleFocus}
-                success={this.state.email.isValid.toString()}
+                context={this}
               />
-              <div className="login-form-tooltip-container">
-                <Tooltip show={this.state.email.shouldShowTooltip}>
-                  {this.state.email.tooltip}
-                </Tooltip>
-              </div>
+              <Tooltip show={this.state.email.shouldShowTooltip}>
+                {this.state.email.tooltip}
+              </Tooltip>
             </ElementWrap>
 
             <ElementWrap>
-              <input
-                id='password'
+              <AppInput
+                id="password"
                 type="password"
-                className="form-control"
                 placeholder="password"
-                onChange={this.handleInputChange}
-                onFocus={this.handleFocus}
-                onBlur={this.handleFocus}
                 maxLength="25"
-                success={this.state.password.isValid.toString()}
+                context={this}
               />
-              <div className="login-form-tooltip-container">
-                <Tooltip show={this.state.password.shouldShowTooltip}>
-                  {this.state.password.tooltip}
-                </Tooltip>
-              </div>
+              <Tooltip show={this.state.password.shouldShowTooltip}>
+                {this.state.password.tooltip}
+              </Tooltip>
             </ElementWrap>
 
             {this.getComnfirmedPasswordElement()}
@@ -204,14 +199,6 @@ function ElementWrap(props) {
       <div className="col-10 col-lg-8 form-group">
         {props.children}
       </div>
-    </div>
-  );
-}
-
-function Tooltip(props) {
-  return (
-    <div className={`login-form-tooltip ${props.show ? '' : 'd-none'}`}>
-      {props.children}
     </div>
   );
 }

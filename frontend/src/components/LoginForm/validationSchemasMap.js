@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const yupSchemasMap = new Map([
+const validationSchemasMap = new Map([
   ['email', yup.string().email().required()],
   ['password',
     yup
@@ -12,4 +12,4 @@ const yupSchemasMap = new Map([
   ]
 ]);
 
-export default yupSchemasMap;
+export default validationSchemasMap;

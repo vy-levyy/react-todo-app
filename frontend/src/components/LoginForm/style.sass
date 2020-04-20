@@ -11,13 +11,16 @@ $fontWeight: 600
 [success="true"]
   border: 1px solid green
 
+[danger="true"]
+  border: 1px solid red
+
 .submit-button
   color: #777
   width: 250px
   border-radius: 1rem
   padding: 1.5%
   border: none
-  cursor: pointer
+  cursor: default !important
   margin: 10px 0 !important
   font-weight: $fontWeight
   transition: 0.2s
@@ -25,14 +28,10 @@ $fontWeight: 600
 [enabled="true"]
   color: #fff
   background-color: $color
+  cursor: pointer !important
   transition: 0.2s
 
 .link
   color: $color
   font-weight: $fontWeight
   text-decoration: none
-
-
-.login-form-tooltip-container
-  min-height: 24px
-  color: #ccc

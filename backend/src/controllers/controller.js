@@ -1,6 +1,6 @@
 const model = require('../models/model');
 const Joi = require('@hapi/joi');
-const joiSchemas = require('../joiSchemas');
+const validationSchemas = require('../validationSchemas');
 
 
 function handleModel(res, modelPromise, isGetMethod = false) {
@@ -21,7 +21,7 @@ function handleValidationError(res, error, functionName) {
 }
 
 exports.task_list = (req, res) => {
-  const { error, value } = joiSchemas.userId.validate(req.query.userId);
+  const { error, value } = validationSchemas.userId.validate(req.query.userId);
 
   if (error) handleValidationError(res, error, 'task list');
   else handleModel(res, model.task_list(value), req.route.methods.get);
@@ -29,8 +29,8 @@ exports.task_list = (req, res) => {
 
 exports.create_task = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    taskDescription: joiSchemas.taskDescription
+    userId: validationSchemas.userId,
+    taskDescription: validationSchemas.taskDescription
   });
   const { error, value } = schema.validate(req.body);
 
@@ -40,8 +40,8 @@ exports.create_task = (req, res) => {
 
 exports.delete_task = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    taskId: joiSchemas.taskId
+    userId: validationSchemas.userId,
+    taskId: validationSchemas.taskId
   });
   const {error, value} = schema.validate(req.query);
 
@@ -51,9 +51,9 @@ exports.delete_task = (req, res) => {
 
 exports.change_task_mark = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    taskId: joiSchemas.taskId,
-    isDone: joiSchemas.isDone
+    userId: validationSchemas.userId,
+    taskId: validationSchemas.taskId,
+    isDone: validationSchemas.isDone
   });
 
   const {error, value} = schema.validate(req.body);
@@ -64,8 +64,8 @@ exports.change_task_mark = (req, res) => {
 
 exports.delete_completed_tasks = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    taskIds: joiSchemas.taskIds
+    userId: validationSchemas.userId,
+    taskIds: validationSchemas.taskIds
   });
   const {error, value} = schema.validate(req.query);
 
@@ -75,8 +75,8 @@ exports.delete_completed_tasks = (req, res) => {
 
 exports.change_all_task_marks = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    isDone: joiSchemas.isDone
+    userId: validationSchemas.userId,
+    isDone: validationSchemas.isDone
   });
   const {error, value} = schema.validate(req.body);
 
@@ -86,9 +86,9 @@ exports.change_all_task_marks = (req, res) => {
 
 exports.change_task_description = (req, res) => {
   const schema = Joi.object({
-    userId: joiSchemas.userId,
-    taskId: joiSchemas.taskId,
-    taskDescription: joiSchemas.taskDescription
+    userId: validationSchemas.userId,
+    taskId: validationSchemas.taskId,
+    taskDescription: validationSchemas.taskDescription
   });
   const {error, value} = schema.validate(req.body);
 

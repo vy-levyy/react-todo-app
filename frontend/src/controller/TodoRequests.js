@@ -13,8 +13,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
 
@@ -27,8 +26,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
 
@@ -43,8 +41,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
 
@@ -58,8 +55,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
 
@@ -74,8 +70,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
 
@@ -88,8 +83,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
   
@@ -103,23 +97,9 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      showErrorOnConsole(error.response);
-      return errorForNotification(error.response);
+      return error.response;
     }
   }
-}
-
-function showErrorOnConsole(response) {
-  console.log(''
-    + response.status + ' '
-    + response.statusText + ' of '
-    + response.data.function + ': '
-    + response.data.message
-  );
-}
-
-function errorForNotification(response) {
-  return `${response.statusText} of ${response.data.function}`
 }
 
 export default TodoRequests;

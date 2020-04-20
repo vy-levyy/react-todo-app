@@ -33,9 +33,7 @@ class TodoNotificationList extends React.Component {
     clearTimeout(TodoNotificationList.timerIds);
   }
 
-
   addItem(item) {
-    //console.log(item)
     let {list} = this.state;
 
     list.unshift({
@@ -73,7 +71,6 @@ class TodoNotificationList extends React.Component {
     if (window.innerWidth < 1024) {
       let {list} = this.state;
 
-
       if (list.length > 0) {
         list = list.map((item, index) => {
           if (index !== 0) {
@@ -83,7 +80,6 @@ class TodoNotificationList extends React.Component {
           return item;
         });
   
-
         this.setState({list});
       }
     }

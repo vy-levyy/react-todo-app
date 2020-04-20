@@ -1,17 +1,17 @@
 const successfullyNotificationMap = new Map([
-  [0, 'Task added successfully!'],
-  [1, 'Task removed successfully!'],
-  [2, 'Task mark changed successfully!'],
-  [3, 'Filter changed successfully!'],
-  [4, 'Completed tasks removed successfully!'],
-  [5, 'Task list mark changed successfully!'],
-  [6, 'Task description changed successfully!'],
+  ['/create-task', 'Task added successfully!'],
+  ['/delete-task', 'Task removed successfully!'],
+  ['/change-task-mark', 'Task mark changed successfully!'],
+  ['/change-filter', 'Filter changed successfully!'],
+  ['/delete-completed-tasks', 'Completed tasks removed successfully!'],
+  ['/change-all-task-marks', 'Task list mark changed successfully!'],
+  ['/change-task-description', 'Task description changed successfully!'],
 ]);
 
 const notification = {
-  success(descriptionNumber) {
+  success(endPoint) {
     return {
-      description: successfullyNotificationMap.get(descriptionNumber),
+      description: successfullyNotificationMap.get(endPoint),
       status: 'success'
     }
   },

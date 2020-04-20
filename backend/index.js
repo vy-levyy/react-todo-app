@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = require('./src/routes/router');
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
 
 
 app.use(express.json());
@@ -12,6 +14,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+
 app.use('/', router);
 
 app.set('port', process.env.PORT || 3000);

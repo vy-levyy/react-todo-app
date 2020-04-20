@@ -1,17 +1,47 @@
 import TodoRequests from './TodoRequests';
 import notification from '../notification';
 
+function getEndPoint(url) {
+  const urlWithoutProtocol = url.slice(url.indexOf('//') + 2);
+  const endPoint = urlWithoutProtocol.slice(urlWithoutProtocol.indexOf('/'));
+
+  return endPoint;
+}
+
+function showErrorOnConsole(response) {
+  if (response.status !== 500) {
+      console.error(''
+      + response.status + ' '
+      + response.statusText + ' of '
+      + response.data.function + ': '
+      + response.data.message
+    );
+  } else {
+    console.error(`${response.status} ${response.statusText}`);
+  }
+}
+
+function errorForNotification(response) {
+  if (response.status !== 500) {
+    return `${response.statusText} of ${response.data.function}`
+  }
+  return `${response.statusText}`;
+}
+
 class TodoHandlers {
+  static async handleGetTaskList () {
+    const response = await TodoRequests.getTaskList(this.state.userId);
+    TodoHandlers.handleResponse.call(this, response);
+  }
+
   static async handleAddTaskChange (taskDescription) {
     const response = await TodoRequests.addTask(this.state.userId, taskDescription);
-    
-    TodoHandlers.handleResponse.call(this, response, 0);
+    TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleRemoveTaskChange (taskId) {
     const response = await TodoRequests.removeTask(this.state.userId, taskId);
-
-    TodoHandlers.handleResponse.call(this, response, 1);
+    TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleChangeTaskMarkChange (taskId) {
@@ -26,14 +56,14 @@ class TodoHandlers {
     if (isDone != null) {
       const response = await TodoRequests.changeTaskMark(this.state.userId, taskId, isDone);
 
-      TodoHandlers.handleResponse.call(this, response, 2);
+      TodoHandlers.handleResponse.call(this, response);
     }
   }
 
   static async handleChangeFilterChange (filterStatus) {
     this.setState({
       filter: filterStatus,
-      notification: notification.success(3)
+      notification: notification.success('/change-filter')
     });
   }
 
@@ -52,7 +82,7 @@ class TodoHandlers {
 
     const response = await TodoRequests.removeCompletedTasks(this.state.userId, taskIds);
 
-    TodoHandlers.handleResponse.call(this, response, 4);
+    TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleChangeAllTaskMarksChange () {
@@ -61,7 +91,7 @@ class TodoHandlers {
       !this.state.isAllCompletedTasks
     );
 
-    TodoHandlers.handleResponse.call(this, response, 5);
+    TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleChangeTaskDescriptionChange (taskId, taskDescription) {
@@ -71,23 +101,25 @@ class TodoHandlers {
       taskDescription.trim()
     );
 
-    TodoHandlers.handleResponse.call(this, response, 6);
+    TodoHandlers.handleResponse.call(this, response);
   }
 
-  static handleResponse(response, successNotificationNumber) {
+  static handleResponse(response) {
     if (response.status === 200) {
       if (response.config.method === 'get') {
         this.updateStateOn(response.data);
       } else {
         this.setState({
-          notification: notification.success(successNotificationNumber)
+          notification: notification.success(getEndPoint(response.config.url))
         });
 
         this.updateTaskList();
       }
     } else {
+      showErrorOnConsole(response);
+
       this.setState({
-        notification: notification.error(response)
+        notification: notification.error(errorForNotification(response))
       });
     }
   }

@@ -5,7 +5,6 @@ import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
 import TodoHandlers from '../../controller/TodoHandlers';
-import TodoRequests from '../../controller/TodoRequests';
 import './style.css';
 
 
@@ -29,6 +28,10 @@ class TodoApp extends React.Component {
 
   componentDidMount = () => {
     this.updateTaskList();
+  }
+
+  updateTaskList = () => {
+    TodoHandlers.handleGetTaskList.call(this);
   }
 
   handleAddTaskChange = (taskDescription) => {
@@ -57,14 +60,6 @@ class TodoApp extends React.Component {
 
   handleChangeTaskDescriptionChange = (taskId, taskDescription) => {
     TodoHandlers.handleChangeTaskDescriptionChange.call(this, taskId, taskDescription);
-  }
-
-  updateTaskList = async () => {
-    TodoHandlers.handleResponse.call(
-      this,
-      await TodoRequests.getTaskList(this.state.userId), 
-      0
-    );
   }
   
   updateStateOn = (nextTaskList) => {
