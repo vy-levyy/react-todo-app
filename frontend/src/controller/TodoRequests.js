@@ -2,102 +2,167 @@ import axios from 'axios';
 
 const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 
+function getToken() {
+  return localStorage.getItem('token');
+}
+
+function hasToken() {
+  return Boolean(getToken());
+}
+
 class TodoRequests {
-  static getTaskList = async (userId) => {
+  static authentification = async () => {
     try {
-      const response = await axios.get(`${SERVER_HOST}/task-list`, {
-        params: {
-          userId
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios.get(`${SERVER_HOST}/authentification`, {
+        headers: {
+          'X-Access-Token': getToken()
         }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
+    }
+  }
+
+  static getTaskList = async () => {
+    try {
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios.get(`${SERVER_HOST}/task-list`, {
+        headers: {
+          'X-Access-Token': getToken()
+        }
+      });
+      return response;
+    } catch(error) {
+      return error.response || error;
     }
   }
 
   static addTask = async (userId, taskDescription) => {
     try {
-      const response = await axios.post(`${SERVER_HOST}/create-task`, {
-        userId,
-        taskDescription
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios({
+        method: 'post',
+        url: `${SERVER_HOST}/create-task`,
+        headers: { 'X-Access-Token': getToken() },
+        data: { taskDescription }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
     }
   }
 
   static removeTask = async (userId, taskId) => {
     try {
-      const response = await axios.delete(`${SERVER_HOST}/delete-task`, {
-        params: {
-          userId,
-          taskId
-        }
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios({
+        method: 'delete',
+        url: `${SERVER_HOST}/delete-task`,
+        headers: { 'X-Access-Token': getToken() },
+        params: { taskId }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
     }
   }
 
   static changeTaskMark = async (userId, taskId, isDone) => {
     try {
-      const response = await axios.put(`${SERVER_HOST}/change-task-mark`, {
-        userId,
-        taskId,
-        isDone
-      });
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
 
-      return response;
-    } catch(error) {
-      return error.response;
-    }
-  }
-
-  static removeCompletedTasks = async (userId, taskIds) => {
-    try {
-      const response = await axios.delete(`${SERVER_HOST}/delete-completed-tasks`, {
-        params: {
-          userId,
-          taskIds
+      const response = await axios({
+        method: 'put',
+        url: `${SERVER_HOST}/change-task-mark`,
+        headers: { 'X-Access-Token': getToken() },
+        data: {
+          taskId,
+          isDone
         }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
+    }
+  }
+
+  static removeCompletedTasks = async (userId, taskIds) => {
+    try {
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios({
+        method: 'delete',
+        url: `${SERVER_HOST}/delete-completed-tasks`,
+        headers: { 'X-Access-Token': getToken() },
+        params: { taskIds }
+      });
+
+      return response;
+    } catch(error) {
+      return error.response || error;
     }
   }
 
   static changeAllTaskMarks = async (userId, isDone) => {
     try {
-      const response = await axios.put(`${SERVER_HOST}/change-all-task-marks`, {
-        userId,
-        isDone
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios({
+        method: 'put',
+        url: `${SERVER_HOST}/change-all-task-marks`,
+        headers: { 'X-Access-Token': getToken() },
+        data: { isDone }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
     }
   }
   
   static changeTaskDescription = async (userId, taskId, taskDescription) => {
     try {
-      const response = await axios.put(`${SERVER_HOST}/change-task-description`, {
-        userId,
-        taskId,
-        taskDescription
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios({
+        method: 'put',
+        url: `${SERVER_HOST}/change-task-description`,
+        headers: { 'X-Access-Token': getToken() },
+        data: {
+          taskId,
+          taskDescription
+        }
       });
 
       return response;
     } catch(error) {
-      return error.response;
+      return error.response || error;
     }
   }
 }

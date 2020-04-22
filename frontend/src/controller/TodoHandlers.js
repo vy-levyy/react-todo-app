@@ -9,26 +9,33 @@ function getEndPoint(url) {
 }
 
 function showErrorOnConsole(response) {
-  if (response.status !== 500) {
-      console.error(''
-      + response.status + ' '
-      + response.statusText + ' of '
-      + response.data.function + ': '
-      + response.data.message
-    );
+  if (response.data) {
+    const message      = response.data.message || '';
+    const functionName = message      !== '' ? `${response.data.function}: ` : '';
+    const statusText   = functionName !== '' ? `${response.statusText} of `  : response.statusText;
+    const status       = `${response.status} `;
+  
+    console.error(status + statusText + functionName + message);
   } else {
-    console.error(`${response.status} ${response.statusText}`);
+    console.error(response);
   }
 }
 
 function errorForNotification(response) {
-  if (response.status !== 500) {
-    return `${response.statusText} of ${response.data.function}`
+  if (response.data) {
+    const functionName = response.data.function ? ` of ${response.data.function}` : '';
+    return response.statusText + functionName;
   }
-  return `${response.statusText}`;
+  
+  return response;
 }
 
 class TodoHandlers {
+  static async handleAuthentification () {
+    const response = await TodoRequests.authentification();
+    return Boolean(response.status && response.status === 200);
+  }
+
   static async handleGetTaskList () {
     const response = await TodoRequests.getTaskList(this.state.userId);
     TodoHandlers.handleResponse.call(this, response);
@@ -106,7 +113,7 @@ class TodoHandlers {
 
   static handleResponse(response) {
     if (response.status === 200) {
-      if (response.config.method === 'get') {
+      if (getEndPoint(response.config.url) === '/task-list') {
         this.updateStateOn(response.data);
       } else {
         this.setState({

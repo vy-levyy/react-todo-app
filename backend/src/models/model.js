@@ -1,54 +1,73 @@
-const connection = require('./mysqlConnection');
+const { sequelize, Sequelize: { QueryTypes } } = require('./config.db');
 
 exports.task_list = (userId) => {
-  return connection.query(`
-    SELECT
-      task_id AS id,
-      task_description AS description,
-      done AS isDone
+  return sequelize.query(`
+    SELECT id, description, is_done AS isDone
     FROM todo.tasks
-    WHERE user_id = ?
-  `, [userId]);
+    WHERE userId = ${userId}
+  `, {
+    raw: true,
+    type: QueryTypes.SELECT
+  });
 };
 
 exports.create_task = (userId, taskDescription) => {
-  return connection.query(`
-    INSERT INTO todo.tasks (user_id, task_description, done)
-    VALUE (?, ?, false)
-  `, [userId, taskDescription]);
+  // console.log(userId)
+  return sequelize.query(`
+    INSERT INTO todo.tasks (userId, description, is_done)
+    VALUE ('${userId}', '${taskDescription}', false)
+  `, {
+    raw: true,
+    type: QueryTypes.INSERT
+  });
 }
 
 exports.delete_task = (userId, taskId) => {
-  return connection.query(`
+  return sequelize.query(`
     DELETE FROM todo.tasks
-    WHERE user_id = ? AND task_id = ?
-  `,[userId, taskId]);
+    WHERE userId = ${userId} AND id = ${taskId}
+  `, {
+    raw: true,
+    type: QueryTypes.DELETE
+  });
 }
 
 exports.change_task_mark = (userId, taskId, isDone) => {
-  return connection.query(`
-    UPDATE todo.tasks SET done = ?
-    WHERE user_id = ? and task_id = ?
-  `, [isDone, userId, taskId]);
+  return sequelize.query(`
+    UPDATE todo.tasks SET is_done = ${isDone}
+    WHERE userId = ${userId} AND id = ${taskId}
+  `, {
+    raw: true,
+    type: QueryTypes.UPDATE
+  });
 }
 
 exports.delete_completed_tasks = (userId, taskIds) => {
-  return connection.query(`
+  return sequelize.query(`
     DELETE from todo.tasks
-    WHERE user_id = ? AND task_id in (?)
-  `, [userId, taskIds]);
+    WHERE userId = ${userId} AND id in (${taskIds})
+  `, {
+    raw: true,
+    type: QueryTypes.DELETE
+  });
 }
 
 exports.change_all_task_marks = (userId, isDone) => {
-  return connection.query(`
-    UPDATE todo.tasks SET done = ?
-    WHERE user_id = ?
-  `,[isDone, userId]);
+  return sequelize.query(`
+    UPDATE todo.tasks SET is_done = ${isDone}
+    WHERE userId = ${userId}
+  `, {
+    raw: true,
+    type: QueryTypes.UPDATE
+  });
 }
 
 exports.change_task_description = (userId, taskId, taskDescription) => {
-  return connection.query(`
-    UPDATE todo.tasks SET task_description = ?
-    WHERE user_id = ? AND task_id = ?
-  `, [taskDescription, userId, taskId]);
+  return sequelize.query(`
+    UPDATE todo.tasks SET description = '${taskDescription}'
+    WHERE userId = ${userId} AND id = ${taskId}
+  `, {
+    raw: true,
+    type: QueryTypes.UPDATE
+  });
 }

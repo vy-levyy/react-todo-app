@@ -5,6 +5,7 @@ import validationSchemasMap from './validationSchemasMap';
 import tooltipMaps from './tooltipMaps';
 import './style.sass';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 function InputField(tooltip) {
   return {
@@ -72,9 +73,23 @@ class LoginForm extends React.Component {
     });
   }
 
-  handleSubmit(event) {
-    console.log('Отправлено');
+  handleSubmit = async (event) => {
     event.preventDefault();
+    const endPoint = !this.isAuthorizationMode() ? 'signup' : 'signin';
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_HOST}/${endPoint}`, {
+        email: this.state.email.value,
+        password: this.state.password.value
+      });
+
+      console.log(response);
+      if (this.isAuthorizationMode() && response.data.accessToken) {
+        localStorage.setItem('token', response.data.accessToken);
+      }
+    } catch(error) {
+      console.log(error.response);
+    }
   }
 
   isPasswordsMatch() {

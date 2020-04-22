@@ -1,5 +1,4 @@
 import React from 'react';
-//import './style.sass';
 
 function AppInput(props) {
   const { id, context } = props;
