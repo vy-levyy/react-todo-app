@@ -2,10 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = require('./src/routes/router');
-const sequelize = require('./src/models/config.db');
-const Sequelize = require('sequelize');
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
 
 
 app.use(express.json());
@@ -19,11 +15,12 @@ app.use((req, res, next) => {
   );
   next();
 });
-
 app.use('/', router);
 
-app.set('port', process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
 
-app.listen(app.get('port'), () => {
-  console.log(`Сервер подключился к порту ${app.get('port')}`);
+app.set('port', port);
+
+app.listen(port, () => {
+  console.log(`Сервер подключился к порту ${port}`);
 });

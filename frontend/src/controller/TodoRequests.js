@@ -46,7 +46,7 @@ class TodoRequests {
     }
   }
 
-  static addTask = async (userId, taskDescription) => {
+  static addTask = async (taskDescription) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');
@@ -65,7 +65,7 @@ class TodoRequests {
     }
   }
 
-  static removeTask = async (userId, taskId) => {
+  static removeTask = async (taskId) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');
@@ -84,7 +84,7 @@ class TodoRequests {
     }
   }
 
-  static changeTaskMark = async (userId, taskId, isDone) => {
+  static changeTaskMark = async (taskId, isDone) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');
@@ -106,7 +106,7 @@ class TodoRequests {
     }
   }
 
-  static removeCompletedTasks = async (userId, taskIds) => {
+  static removeCompletedTasks = async (taskIds) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');
@@ -125,7 +125,7 @@ class TodoRequests {
     }
   }
 
-  static changeAllTaskMarks = async (userId, isDone) => {
+  static changeAllTaskMarks = async (isDone) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');
@@ -144,7 +144,7 @@ class TodoRequests {
     }
   }
   
-  static changeTaskDescription = async (userId, taskId, taskDescription) => {
+  static changeTaskDescription = async (taskId, taskDescription) => {
     try {
       if (!hasToken()) {
         throw new Error('no token');

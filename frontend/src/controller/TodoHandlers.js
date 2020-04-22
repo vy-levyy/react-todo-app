@@ -37,17 +37,17 @@ class TodoHandlers {
   }
 
   static async handleGetTaskList () {
-    const response = await TodoRequests.getTaskList(this.state.userId);
+    const response = await TodoRequests.getTaskList();
     TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleAddTaskChange (taskDescription) {
-    const response = await TodoRequests.addTask(this.state.userId, taskDescription);
+    const response = await TodoRequests.addTask(taskDescription);
     TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleRemoveTaskChange (taskId) {
-    const response = await TodoRequests.removeTask(this.state.userId, taskId);
+    const response = await TodoRequests.removeTask(taskId);
     TodoHandlers.handleResponse.call(this, response);
   }
 
@@ -61,7 +61,7 @@ class TodoHandlers {
 
 
     if (isDone != null) {
-      const response = await TodoRequests.changeTaskMark(this.state.userId, taskId, isDone);
+      const response = await TodoRequests.changeTaskMark(taskId, isDone);
 
       TodoHandlers.handleResponse.call(this, response);
     }
@@ -87,14 +87,13 @@ class TodoHandlers {
       taskIds.push(task.id);
     });
 
-    const response = await TodoRequests.removeCompletedTasks(this.state.userId, taskIds);
+    const response = await TodoRequests.removeCompletedTasks(taskIds);
 
     TodoHandlers.handleResponse.call(this, response);
   }
 
   static async handleChangeAllTaskMarksChange () {
     const response = await TodoRequests.changeAllTaskMarks(
-      this.state.userId,
       !this.state.isAllCompletedTasks
     );
 
@@ -103,7 +102,6 @@ class TodoHandlers {
 
   static async handleChangeTaskDescriptionChange (taskId, taskDescription) {
     const response = await TodoRequests.changeTaskDescription(
-      this.state.userId,
       taskId,
       taskDescription.trim()
     );

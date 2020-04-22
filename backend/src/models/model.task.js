@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     description: {
       type: Sequelize.STRING
     },
-    is_done: {
+    isDone: {
       type: Sequelize.BOOLEAN
     }
   });

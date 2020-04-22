@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const verifySignUp = require('./verifySignUp');
-const verifyJwtToken = require('./verifyJwtToken');
+const verifyJwtToken = require('../controllers/verifyJwtToken');
 const controller = require('../controllers/controller');
 
 router.get('/authentification', verifyJwtToken, controller.authentification);
-router.post('/signup', verifySignUp, controller.signup);
+router.post('/signup', controller.signup);
 router.post('/signin', controller.signin);
 router.get('/task-list', verifyJwtToken, controller.task_list);
 router.post('/create-task', verifyJwtToken, controller.create_task);

@@ -20,9 +20,6 @@ class TodoApp extends React.Component {
       isAllCompletedTasks: false,
       filter: 'All',
       notification: null,
-
-      // temp
-      userId: 1
     };
   }
 
