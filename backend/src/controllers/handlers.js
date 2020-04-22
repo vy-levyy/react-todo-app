@@ -40,10 +40,12 @@ function handleSigninModel(res, modelPromise, password) {
 }
 
 function handleError(res, error, code) {
-  error = error.details ? error.details[0].message : error;
+  if (typeof(error) !== 'string') {
+    error = error.details ? error.details[0].message : error;
+  }
 
   res.status(code).send({
-    message: error,
+    message: error
   });
 }
 

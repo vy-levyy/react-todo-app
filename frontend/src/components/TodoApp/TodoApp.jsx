@@ -10,7 +10,7 @@ import './style.css';
 
 class TodoApp extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       taskList: [],

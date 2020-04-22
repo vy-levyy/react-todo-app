@@ -25,7 +25,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -42,7 +42,7 @@ class TodoRequests {
       });
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -61,7 +61,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -80,7 +80,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -102,7 +102,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -121,7 +121,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 
@@ -140,7 +140,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
   
@@ -162,7 +162,7 @@ class TodoRequests {
 
       return response;
     } catch(error) {
-      return error.response || error;
+      return error.response || error.toString();
     }
   }
 }

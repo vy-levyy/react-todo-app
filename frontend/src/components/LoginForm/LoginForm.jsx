@@ -83,9 +83,13 @@ class LoginForm extends React.Component {
         password: this.state.password.value
       });
 
-      console.log(response);
-      if (this.isAuthorizationMode() && response.data.accessToken) {
-        localStorage.setItem('token', response.data.accessToken);
+      if (this.isAuthorizationMode()) {
+        if (response.data.accessToken) {
+          localStorage.setItem('token', response.data.accessToken);
+          window.location = '/';
+        }
+      } else {
+        window.location = '/authorization';
       }
     } catch(error) {
       console.log(error.response);

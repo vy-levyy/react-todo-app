@@ -26,7 +26,7 @@ function errorForNotification(response) {
     const functionName = response.data.function ? ` of ${response.data.function}` : '';
     return response.statusText + functionName;
   }
-  
+
   return response;
 }
 

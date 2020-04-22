@@ -3,59 +3,69 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  //Redirect
+  Redirect
 } from "react-router-dom";
 import Home from './components/pages/Home/Home.jsx';
 import Authorization from './components/pages/Authorization/Authorization.jsx';
 import Registration from './components/pages/Registration/Registration.jsx';
-//import TodoHandlers from './controller/TodoHandlers';
+import TodoHandlers from './controller/TodoHandlers';
 
-// function isAuthentification() {
-//   let isAuth = null;
+const PrivateRoute = ({component: Component, isLoggedIn, ...rest}) => {
+  let renderedComponent = null;
 
-//   (() => {
-//     (async () => {
-//       console.log(412)
-//       isAuth = await TodoHandlers.handleAuthentification();
-//       console.log(413)
-//     })();
-//   })();
+  if (isLoggedIn !== null) {
+    renderedComponent = (
+      <Route
+        {...rest}
+        render={
+          (props) => (isLoggedIn ? <Component {...props} /> : <Redirect to="/authorization" />)
+        }
+      />
+    );
+  }
 
-//   return isAuth;
-// }
+  return renderedComponent;
+};
 
-// function PrivateRoute(props) {
-//   let renderedComponent = null;
-//   const isf = isAuthentification()
-//   console.log(isf)
-//   if (isf) {
-//     renderedComponent = <Route path={props.path}>{props.children}</Route>
-//   } else {
-//     renderedComponent = <Redirect to={props.redirect} />;
-//   }
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-//   return renderedComponent;
-// }
+    this.state = {
+      isLoggedIn: null
+    };
+  }
 
-function App() {
-  return (
-    <Router>
-      <Switch>
-        <Route path="/authorization">
-          <Authorization />
-        </Route>
-        <Route path="/registration">
-          <Registration />
-        </Route>
-        {/* <PrivateRoute path="/" redirect="/authorization">
-          <Home />
-        </PrivateRoute> */}
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
-  );
+  async componentDidMount() {
+    const isLoggedIn = await this.isAuth();
+
+    this.setState({ isLoggedIn });
+  }
+
+  isAuth = () => {
+    return TodoHandlers.handleAuthentification();
+  }
+
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route path="/authorization" exact>
+            <Authorization />
+          </Route>
+          <Route path="/registration" exact>
+            <Registration />
+          </Route>
+          <PrivateRoute
+            path="/"
+            isLoggedIn={this.state.isLoggedIn}
+            component={Home}
+            exact
+          />
+        </Switch>
+      </Router>
+    );
+  }
 }
 
 export default App;
