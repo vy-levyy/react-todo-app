@@ -4,6 +4,9 @@ import TodoHeader from '../TodoHeader/TodoHeader.jsx';
 import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
+import UserEmail from '../UserEmail/UserEmail.jsx';
+import LogoutButton from '../LogoutButton/LogoutButton.jsx';
+import TodoUserEmail from '../TodoUserEmail/TodoUserEmail.jsx';
 import TodoHandlers from '../../controller/TodoHandlers';
 import './style.css';
 
@@ -20,11 +23,16 @@ class TodoApp extends React.Component {
       isAllCompletedTasks: false,
       filter: 'All',
       notification: null,
+      email: null
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     this.updateTaskList();
+
+    const email = await TodoHandlers.handleGetEmail.call(this);
+
+    this.setState({ email });
   }
 
   updateTaskList = () => {
@@ -168,6 +176,10 @@ class TodoApp extends React.Component {
   render() {
     return (
       <div className={this.props.className + " todo-app"}>
+        <TodoUserEmail>
+          <UserEmail>{ this.state.email }</UserEmail>
+          <LogoutButton>Exit</LogoutButton>
+        </TodoUserEmail>
         <TodoNotificationList className="row">
           {this.state.notification}
         </TodoNotificationList>

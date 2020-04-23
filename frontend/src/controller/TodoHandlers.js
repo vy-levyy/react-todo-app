@@ -36,6 +36,11 @@ class TodoHandlers {
     return Boolean(response.status && response.status === 200);
   }
 
+  static async handleGetEmail() {
+    const response = await TodoRequests.getEmail();
+    return TodoHandlers.handleResponse.call(this, response);
+  }
+
   static async handleGetTaskList () {
     const response = await TodoRequests.getTaskList();
     TodoHandlers.handleResponse.call(this, response);
@@ -111,16 +116,23 @@ class TodoHandlers {
 
   static handleResponse(response) {
     if (response.status === 200) {
-      if (getEndPoint(response.config.url) === '/task-list') {
+      const endPoint = getEndPoint(response.config.url);
+
+      if (endPoint === '/task-list') {
         this.updateStateOn(response.data);
-      } else {
+      }
+      else if (endPoint === '/email') {
+        return response.data.email;
+      }
+      else {
         this.setState({
-          notification: notification.success(getEndPoint(response.config.url))
+          notification: notification.success(endPoint)
         });
 
         this.updateTaskList();
       }
-    } else {
+    }
+    else {
       showErrorOnConsole(response);
 
       this.setState({

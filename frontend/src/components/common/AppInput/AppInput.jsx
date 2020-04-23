@@ -1,20 +1,19 @@
 import React from 'react';
 
-function AppInput(props) {
-  const { id, context } = props;
-
+function AppInput({ id, type, placeholder, context, maxLength = 100, autoFocus = false }) {
   return (
     <input
       id={id}
-      type={props.type}
+      type={type}
       className="form-control"
-      placeholder={props.placeholder}
+      placeholder={placeholder}
       onChange={context.handleInputChange}
       onFocus={context.handleFocus}
       onBlur={context.handleFocus}
-      maxLength={props.maxlength || 100}
+      maxLength={maxLength}
       success={context.isValidInput(id).toString()}
       danger={(!context.isValidInput(id) && !context.isEmptyInput(id)).toString()}
+      autoFocus={autoFocus}
     />
   );
 }

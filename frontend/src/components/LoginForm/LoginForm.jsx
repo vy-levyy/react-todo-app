@@ -174,6 +174,7 @@ class LoginForm extends React.Component {
                 type="email"
                 placeholder="email"
                 context={this}
+                autoFocus
               />
               <Tooltip show={this.state.email.shouldShowTooltip}>
                 {this.state.email.tooltip}

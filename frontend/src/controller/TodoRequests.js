@@ -29,6 +29,24 @@ class TodoRequests {
     }
   }
 
+  static getEmail = async () => {
+    try {
+      if (!hasToken()) {
+        throw new Error('no token');
+      }
+
+      const response = await axios.get(`${SERVER_HOST}/email`, {
+        headers: {
+          'X-Access-Token': getToken()
+        }
+      });
+
+      return response;
+    } catch(error) {
+      return error.response || error.toString();
+    }
+  }
+
   static getTaskList = async () => {
     try {
       if (!hasToken()) {

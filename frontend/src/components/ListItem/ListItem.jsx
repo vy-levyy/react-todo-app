@@ -21,6 +21,12 @@ class ListItem extends React.Component {
 
   handleIsEditTaskChange = (isEditTask) => {
     this.setState({isEditTask});
+
+    if (!isEditTask) {
+      this.setState({
+        hasMouseOver: false
+      })
+    }
   }
 
   render() {
@@ -50,10 +56,9 @@ class ListItem extends React.Component {
         />
         <div className="col-1">
           <ListItemDeleteButton
-            className={this.state.isEditTask ? 'd-none' : ''}
             taskId={task.id}
             onRemoveTaskChange={this.props.handleRemoveTaskChange}
-            shouldShowButton={this.state.hasMouseOver}
+            shouldShowButton={!this.state.isEditTask && this.state.hasMouseOver}
           />
         </div>
       </li>

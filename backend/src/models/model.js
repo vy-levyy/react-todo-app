@@ -17,6 +17,13 @@ exports.signin = (email) => {
   return this.find_user(email);
 }
 
+exports.email = (id) => {
+  return User.findOne({
+    where: { id },
+    attributes: [ 'email' ]
+  });
+}
+
 exports.task_list = (userId) => {
   return Task.findAll({ where: { userId } });
 };

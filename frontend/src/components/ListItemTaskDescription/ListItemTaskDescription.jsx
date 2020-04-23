@@ -6,6 +6,7 @@ class ListItemTaskDescription extends React.Component {
     super(props);
 
     this.state = {
+      descriptionBeforeEdit: this.props.task.description,
       description: this.props.task.description,
     };
   }
@@ -14,17 +15,20 @@ class ListItemTaskDescription extends React.Component {
     this.props.onIsEditTaskChange(true);
   }
 
-  handleBlur = (e) => {
-    const value = e.target.value.trim();
+  handleBlur = () => {
+    const value = this.state.description.trim();
 
     this.props.onIsEditTaskChange(false);
 
     if (value !== '') {
-      this.props.onChangeTaskDescriptionChange(this.props.task.id, value);
+      if (value !== this.state.descriptionBeforeEdit) {
+        this.props.onChangeTaskDescriptionChange(this.props.task.id, value);
 
-      this.setState({
-        description: value
-      });
+        this.setState({
+          descriptionBeforeEdit: value,
+          description: value
+        });
+      }
     } else {
       this.props.onRemoveTaskChange(this.props.task.id);
     }

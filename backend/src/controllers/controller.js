@@ -3,6 +3,7 @@ module.exports = {
   signup: require('./controller.signup').signup,
   signin: require('./controller.signin').signin,
   task_list: require('./controller.task_list').task_list,
+  email: require('./controller.email').email,
   create_task: require('./controller.create_task').create_task,
   delete_task: require('./controller.delete_task').delete_task,
   change_task_mark: require('./controller.change_task_mark').change_task_mark,
