@@ -1,8 +1,8 @@
 import React from 'react';
-import TodoNotificationListItem from '../TodoNotificationListItem/TodoNotificationListItem.jsx';
+import NotificationListItem from '../NotificationListItem/NotificationListItem.jsx';
 import './style.css';
 
-class TodoNotificationList extends React.Component {
+class NotificationList extends React.Component {
   constructor(props) {
     super(props);
 
@@ -30,7 +30,7 @@ class TodoNotificationList extends React.Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(TodoNotificationList.timerIds);
+    clearTimeout(NotificationList.timerIds);
   }
 
   addItem(item) {
@@ -38,18 +38,18 @@ class TodoNotificationList extends React.Component {
 
     list.unshift({
       html: (
-        <TodoNotificationListItem
+        <NotificationListItem
           className="row"
           status={item.status}
-          key={TodoNotificationList.lastId}
+          key={NotificationList.lastId}
         >
           {item.description}
-        </TodoNotificationListItem>
+        </NotificationListItem>
       ),
       shouldShow: true
     });
 
-    TodoNotificationList.lastId += 1;
+    NotificationList.lastId += 1;
 
     this.setState({list});
     this.removeItem();
@@ -64,7 +64,7 @@ class TodoNotificationList extends React.Component {
       this.setState({list});
     }, 3000);
 
-    TodoNotificationList.timerIds.push(timerId);
+    NotificationList.timerIds.push(timerId);
   }
 
   processList() {
@@ -95,7 +95,7 @@ class TodoNotificationList extends React.Component {
 
   render() {
     return (
-      <div className={this.props.className + " todo-notification-list"}>
+      <div className={this.props.className + " notification-list"}>
         <div className="col">
           {this.getList()}
         </div>
@@ -104,4 +104,4 @@ class TodoNotificationList extends React.Component {
   }
 }
 
-export default TodoNotificationList;
+export default NotificationList;

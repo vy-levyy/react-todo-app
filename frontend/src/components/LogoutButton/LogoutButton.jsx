@@ -1,17 +1,12 @@
 import React from 'react';
+import { userApi } from '../../controller/api';
 import './style.sass';
 
 function LogoutButton({ children }) {
-
-  const handleClick = () => {
-    localStorage.removeItem('token');
-    window.location = '/authorization';
-  }
-
   return (
     <button
       className="logout-button"
-      onClick={ handleClick }
+      onClick={ userApi.logout }
     >
       { children }
     </button>

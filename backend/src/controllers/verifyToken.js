@@ -12,7 +12,7 @@ verifyToken = (req, res, next) => {
 
   jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {
-      return handleError(res, `Fail to authentication. Error: ${err}`, 403);
+      return handleError(res, 'Fail to authentication', 403);
     }
 
     req.userId = decoded.id;

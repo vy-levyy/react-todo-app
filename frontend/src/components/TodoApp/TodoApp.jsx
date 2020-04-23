@@ -3,13 +3,12 @@ import Logo from '../Logo/Logo.jsx';
 import TodoHeader from '../TodoHeader/TodoHeader.jsx';
 import List from '../List/List.jsx';
 import TodoFooter from '../TodoFooter/TodoFooter.jsx';
-import TodoNotificationList from '../TodoNotificationList/TodoNotificationList.jsx';
 import UserEmail from '../UserEmail/UserEmail.jsx';
 import LogoutButton from '../LogoutButton/LogoutButton.jsx';
 import TodoUserEmail from '../TodoUserEmail/TodoUserEmail.jsx';
-import TodoHandlers from '../../controller/TodoHandlers';
+import RequestHandlers from '../../controller/RequestHandlers';
+import { taskApi } from '../../controller/api';
 import './style.css';
-
 
 class TodoApp extends React.Component {
   constructor(props) {
@@ -22,7 +21,6 @@ class TodoApp extends React.Component {
       completedItemsCounter: 0,
       isAllCompletedTasks: false,
       filter: 'All',
-      notification: null,
       email: null
     };
   }
@@ -30,41 +28,93 @@ class TodoApp extends React.Component {
   componentDidMount = async () => {
     this.updateTaskList();
 
-    const email = await TodoHandlers.handleGetEmail.call(this);
+    const email = await RequestHandlers.handleGetEmail.call(this);
 
     this.setState({ email });
   }
 
   updateTaskList = () => {
-    TodoHandlers.handleGetTaskList.call(this);
+    taskApi.getTaskList().then((taskList) => {
+      this.updateStateOn(taskList);
+    });
   }
 
   handleAddTaskChange = (taskDescription) => {
-    TodoHandlers.handleAddTaskChange.call(this, taskDescription);
+    taskApi.addTask(taskDescription).then((success) => {
+      if (success) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
 
   handleRemoveTaskChange = (taskId) => {
-    TodoHandlers.handleRemoveTaskChange.call(this, taskId);
+    taskApi.removeTask(taskId).then((reponse) => {
+      if (reponse) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
 
   handleChangeTaskMarkChange = (taskId) => {
-    TodoHandlers.handleChangeTaskMarkChange.call(this, taskId);
+    let {taskList} = this.state;
+    let isDone = null;
+
+    taskList.forEach((task) => {
+      if (task.id === taskId) isDone = !task.isDone;
+    });
+
+    taskApi.changeTaskMark(taskId, isDone).then((success) => {
+      if (success) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
 
   handleChangeFilterChange = (filterStatus) => {
-    TodoHandlers.handleChangeFilterChange.call(this, filterStatus);
+    RequestHandlers.handleChangeFilterChange.call(this, filterStatus);
   }
 
   handleRemoveCompletedTasksChange = () => {
-    TodoHandlers.handleRemoveCompletedTasksChange.call(this);
+    let {taskList} = this.state;
+
+    const completedTasks = taskList.filter((task) => {
+      return task.isDone;
+    });
+
+    let taskIds = [];
+
+    completedTasks.forEach((task) => {
+      taskIds.push(task.id);
+    });
+
+    taskApi.removeCompletedTasks(taskIds).then((success) => {
+      if (success) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
 
   handleChangeAllTaskMarksChange = () => {
-    TodoHandlers.handleChangeAllTaskMarksChange.call(this);
+    taskApi.changeAllTaskMarks(!this.state.isAllCompletedTasks).then((success) => {
+      if (success) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
 
   handleChangeTaskDescriptionChange = (taskId, taskDescription) => {
-    TodoHandlers.handleChangeTaskDescriptionChange.call(this, taskId, taskDescription);
+    taskApi.changeTaskDescription(taskId, taskDescription).then((response) => {
+      console.log(response);
+      if (response) {
+        //TODO: notification
+        this.updateTaskList();
+      }
+    });
   }
   
   updateStateOn = (nextTaskList) => {
@@ -83,7 +133,6 @@ class TodoApp extends React.Component {
       activeItemsCounter: nextActiveItemsCounter,
       completedItemsCounter: nextCompletedItemsCounter,
       isAllCompletedTasks: nextIsAllCompletedTasks,
-      notification: null
     });
   }
   
@@ -180,9 +229,6 @@ class TodoApp extends React.Component {
           <UserEmail>{ this.state.email }</UserEmail>
           <LogoutButton>Exit</LogoutButton>
         </TodoUserEmail>
-        <TodoNotificationList className="row">
-          {this.state.notification}
-        </TodoNotificationList>
         <Logo className="row"/>
         <div className="row todo-wrap">
           <div className="col">
