@@ -12,17 +12,25 @@ api.userApi = {
   },
 
   signup(email, password) {
-    controller.post('signup', { email, password }).then(() => {
-      window.location = '/authorization';
+    return controller.post('signup', { email, password }).then((response) => {
+      if (response.success) {
+        localStorage.setItem('signup', response.message);
+        window.location = '/authorization';
+      } else {
+        return response.message;
+      }
     });
   },
 
   signin(email, password) {
-    controller.post('signin', { email, password }).then(
-      (token) => {
-        localStorage.setItem('token', token);
+    return controller.post('signin', { email, password }).then((response) => {
+      if (response.success) {
+        localStorage.setItem('token', response.token);
         window.location = '/';
-      });
+      } else {
+        return response.message;
+      }
+    });
   },
 
   logout() {

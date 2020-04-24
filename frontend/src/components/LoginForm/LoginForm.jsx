@@ -3,6 +3,7 @@ import AppInput from '../common/AppInput/AppInput.jsx';
 import Tooltip from '../common/Tooltip/Tooltip.jsx';
 import validationSchemasMap from './validationSchemasMap';
 import tooltipMaps from './tooltipMaps';
+import notification from '../../javaScript/notification';
 import './style.sass';
 import { Link } from "react-router-dom";
 import { userApi } from '../../controller/api';
@@ -73,12 +74,15 @@ class LoginForm extends React.Component {
     });
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
     const mode = !this.isAuthorizationMode() ? 'signup' : 'signin';
+    const errorMessage = await userApi[mode](this.state.email.value, this.state.password.value);
 
-    userApi[mode](this.state.email.value, this.state.password.value);
+    if (errorMessage) {
+      this.props.setNotification(notification.error(errorMessage));
+    }
   }
 
   isPasswordsMatch() {

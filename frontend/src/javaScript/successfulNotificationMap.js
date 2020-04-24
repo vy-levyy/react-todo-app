@@ -5,4 +5,5 @@ export default new Map([
   ['delete-completed-tasks', 'Completed tasks removed successfully!'],
   ['change-all-task-marks', 'Task list mark changed successfully!'],
   ['change-task-description', 'Task description changed successfully!'],
+  ['signup', 'Successful registraion']
 ]);

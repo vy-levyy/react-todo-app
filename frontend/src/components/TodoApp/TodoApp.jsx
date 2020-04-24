@@ -6,8 +6,8 @@ import TodoFooter from '../TodoFooter/TodoFooter.jsx';
 import UserEmail from '../UserEmail/UserEmail.jsx';
 import LogoutButton from '../LogoutButton/LogoutButton.jsx';
 import TodoUserEmail from '../TodoUserEmail/TodoUserEmail.jsx';
-import RequestHandlers from '../../controller/RequestHandlers';
-import { taskApi } from '../../controller/api';
+import notification from '../../javaScript/notification';
+import { userApi, taskApi } from '../../controller/api';
 import './style.css';
 
 class TodoApp extends React.Component {
@@ -27,34 +27,26 @@ class TodoApp extends React.Component {
 
   componentDidMount = async () => {
     this.updateTaskList();
-
-    const email = await RequestHandlers.handleGetEmail.call(this);
-
-    this.setState({ email });
   }
 
   updateTaskList = () => {
-    taskApi.getTaskList().then((taskList) => {
-      this.updateStateOn(taskList);
+    taskApi.getTaskList().then(async (response) => {
+      if (response.success) {
+        const email = await userApi.getEmail();
+
+        this.updateStateOn(response.taskList, email);
+      } else {
+        this.props.setNotification(notification.error(response.message));
+      }
     });
   }
 
   handleAddTaskChange = (taskDescription) => {
-    taskApi.addTask(taskDescription).then((success) => {
-      if (success) {
-        //TODO: notification
-        this.updateTaskList();
-      }
-    });
+    this.handleTaskApiResponse(taskApi.addTask(taskDescription));
   }
 
   handleRemoveTaskChange = (taskId) => {
-    taskApi.removeTask(taskId).then((reponse) => {
-      if (reponse) {
-        //TODO: notification
-        this.updateTaskList();
-      }
-    });
+    this.handleTaskApiResponse(taskApi.removeTask(taskId));
   }
 
   handleChangeTaskMarkChange = (taskId) => {
@@ -65,16 +57,11 @@ class TodoApp extends React.Component {
       if (task.id === taskId) isDone = !task.isDone;
     });
 
-    taskApi.changeTaskMark(taskId, isDone).then((success) => {
-      if (success) {
-        //TODO: notification
-        this.updateTaskList();
-      }
-    });
+    this.handleTaskApiResponse(taskApi.changeTaskMark(taskId, isDone));
   }
 
   handleChangeFilterChange = (filterStatus) => {
-    RequestHandlers.handleChangeFilterChange.call(this, filterStatus);
+    this.setState({ filter: filterStatus });
   }
 
   handleRemoveCompletedTasksChange = () => {
@@ -90,34 +77,34 @@ class TodoApp extends React.Component {
       taskIds.push(task.id);
     });
 
-    taskApi.removeCompletedTasks(taskIds).then((success) => {
-      if (success) {
-        //TODO: notification
-        this.updateTaskList();
-      }
-    });
+    this.handleTaskApiResponse(taskApi.removeCompletedTasks(taskIds));
   }
 
   handleChangeAllTaskMarksChange = () => {
-    taskApi.changeAllTaskMarks(!this.state.isAllCompletedTasks).then((success) => {
-      if (success) {
-        //TODO: notification
-        this.updateTaskList();
-      }
-    });
+    this.handleTaskApiResponse(
+      taskApi.changeAllTaskMarks(!this.state.isAllCompletedTasks)
+    );
   }
 
   handleChangeTaskDescriptionChange = (taskId, taskDescription) => {
-    taskApi.changeTaskDescription(taskId, taskDescription).then((response) => {
-      console.log(response);
-      if (response) {
-        //TODO: notification
+    this.handleTaskApiResponse(
+      taskApi.changeTaskDescription(taskId, taskDescription)
+    );
+  }
+
+  handleTaskApiResponse = (promise) => {
+    promise.then((response) => {
+      const responseStatus = response.success ? 'success' : 'error';
+
+      if (response.success) {
         this.updateTaskList();
       }
+
+      this.props.setNotification(notification[responseStatus](response.message));
     });
   }
-  
-  updateStateOn = (nextTaskList) => {
+
+  updateStateOn = (nextTaskList, email) => {
     const nextState = this.getNextStateOn(nextTaskList);
 
     const {
@@ -128,11 +115,12 @@ class TodoApp extends React.Component {
     } = nextState;
 
     this.setState({
+      email,
       taskList: nextTaskList,
       itemsCounter: nextItemsCounter,
       activeItemsCounter: nextActiveItemsCounter,
       completedItemsCounter: nextCompletedItemsCounter,
-      isAllCompletedTasks: nextIsAllCompletedTasks,
+      isAllCompletedTasks: nextIsAllCompletedTasks
     });
   }
   

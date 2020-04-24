@@ -94,8 +94,10 @@ class NotificationList extends React.Component {
   }
 
   render() {
+    const notificationListPosition = this.props.isDownPosition ? 'down' : 'up';
+
     return (
-      <div className={this.props.className + " notification-list"}>
+      <div className={this.props.className + " notification-list " + notificationListPosition}>
         <div className="col">
           {this.getList()}
         </div>
