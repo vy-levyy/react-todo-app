@@ -23,7 +23,7 @@ controller.interceptors.request.use((config) => {
 
 controller.interceptors.response.use((response) => {
   if (!response.config) {
-    return response
+    return response;
   }
 
   switch (response.config.url) {

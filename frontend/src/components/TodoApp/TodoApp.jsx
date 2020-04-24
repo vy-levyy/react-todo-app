@@ -27,14 +27,18 @@ class TodoApp extends React.Component {
 
   componentDidMount = async () => {
     this.updateTaskList();
+
+    if (this.state.email === null) {
+      const email = await userApi.getEmail();
+
+      this.setState({ email });
+    }
   }
 
   updateTaskList = () => {
     taskApi.getTaskList().then(async (response) => {
       if (response.success) {
-        const email = await userApi.getEmail();
-
-        this.updateStateOn(response.taskList, email);
+        this.updateStateOn(response.taskList);
       } else {
         this.props.setNotification(notification.error(response.message));
       }
@@ -95,16 +99,16 @@ class TodoApp extends React.Component {
   handleTaskApiResponse = (promise) => {
     promise.then((response) => {
       const responseStatus = response.success ? 'success' : 'error';
+      
+      this.props.setNotification(notification[responseStatus](response.message));
 
       if (response.success) {
         this.updateTaskList();
       }
-
-      this.props.setNotification(notification[responseStatus](response.message));
     });
   }
 
-  updateStateOn = (nextTaskList, email) => {
+  updateStateOn = (nextTaskList) => {
     const nextState = this.getNextStateOn(nextTaskList);
 
     const {
@@ -115,7 +119,6 @@ class TodoApp extends React.Component {
     } = nextState;
 
     this.setState({
-      email,
       taskList: nextTaskList,
       itemsCounter: nextItemsCounter,
       activeItemsCounter: nextActiveItemsCounter,

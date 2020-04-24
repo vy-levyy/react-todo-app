@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import NotificationListItem from '../NotificationListItem/NotificationListItem.jsx';
 import './style.css';
 
@@ -9,12 +10,15 @@ class NotificationList extends React.Component {
     this.state = {
       list: [],
     }
+
+
   }
   
   static lastId = 0;
   static timerIds = [];
 
   componentDidMount() {
+
     window.addEventListener("resize", this.processList.bind(this));
     this.processList();
   }
@@ -96,12 +100,13 @@ class NotificationList extends React.Component {
   render() {
     const notificationListPosition = this.props.isDownPosition ? 'down' : 'up';
 
-    return (
-      <div className={this.props.className + " notification-list " + notificationListPosition}>
+    return ReactDOM.createPortal(
+      <div className={"notification-list " + notificationListPosition}>
         <div className="col">
           {this.getList()}
         </div>
-      </div>
+      </div>,
+      document.getElementById('notification')
     );
   }
 }

@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { secretKey } = require('../../config');
 
 function handleModel(res, modelPromise) {
   modelPromise
@@ -28,7 +27,7 @@ function handleSigninModel(res, modelPromise, password) {
 
       const token = jwt.sign(
         { id: user.id, },
-        secretKey,
+        process.env.SECRET_KEY,
         { expiresIn: 86400 }
       );
 

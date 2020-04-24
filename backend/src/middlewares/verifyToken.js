@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { handleError } = require('./handlers');
-const { secretKey } = require('../../config');
-
+const { handleError } = require('../controllers/handlers');
 
 verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
@@ -10,9 +8,9 @@ verifyToken = (req, res, next) => {
     return handleError(res, 'No token provided', 403);
   }
 
-  jwt.verify(token, secretKey, (err, decoded) => {
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
     if (err) {
-      return handleError(res, 'Fail to authentication', 403);
+      return handleError(res, 'Fail to authentication', 401);
     }
 
     req.userId = decoded.id;

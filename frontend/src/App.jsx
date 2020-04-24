@@ -7,7 +7,7 @@ import {
 import Home from './components/pages/Home/Home.jsx';
 import Authorization from './components/pages/Authorization/Authorization.jsx';
 import Registration from './components/pages/Registration/Registration.jsx';
-import PrivateRoute from './components/common/PrivateRoute/PrivateRoute.jsx';
+import PrivateRoute from './routes/PrivateRoute/PrivateRoute.jsx';
 import NotificationList from './components/NotificationList/NotificationList.jsx';
 import { userApi } from './controller/api';
 

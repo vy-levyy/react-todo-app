@@ -1,7 +1,6 @@
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcryptjs');
 const { signup, find_user } = require('../models/model');
-const { salt } = require('../../config');
 const { handleModel, handleError } = require('./handlers');
 const { email, password } = require('./validationSchemas');
 
@@ -23,7 +22,7 @@ exports.signup = (req, res) => {
           handleError(res, error, 500);
       });
 
-    value.password = bcrypt.hashSync(value.password, salt);
+    value.password = bcrypt.hashSync(value.password, 8);
     
     handleModel(res, signup(value.email, value.password));
   }
