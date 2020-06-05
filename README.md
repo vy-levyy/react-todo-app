@@ -53,3 +53,14 @@ npm start
 ```
 
 You will be able to access the app on http://localhost:3000
+
+### Features
+
+- authorization;
+- registration;
+- add/delete/change description/change completed todo;
+- delete completed todos;
+- todos filter;
+- todos counters;
+- email display;
+- notifications.
